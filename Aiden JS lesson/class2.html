@@ -15,8 +15,8 @@
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min) + min);
         }
-        function numbers() {
-            console.log("Strings");
+        function strings() {
+            console.log("|--Strings--|");
             let str1 = "brain", str2 = "rot";
             console.log(str1 - str2);
             console.log(str1 + str2);
@@ -28,7 +28,7 @@
             console.log(str1 == str2);//or: console.log(str1 === str2); with triple equals
             return;
         }
-        console.log(numbers());
+        console.log(strings());
         function BrainRot(first, next, then, last) {
             this.first = first;
             this.next = next;
@@ -41,8 +41,8 @@
         let myBrainRot = new BrainRot("Tung", "Tung", "Tung", "Sahur").full();
         console.log("Object Example");
         console.log(myBrainRot);
-        function testNums() {
-            console.log("Numbers");
+        function numbers() {
+            console.log("|--Numbers--|");
             let num1 = getRandomInt(0, 20), num2 = getRandomInt(0, 50);
             console.log(num1 + num2);
             console.log(num1 - num2);
@@ -52,11 +52,11 @@
             console.log(num1 < num2);
             console.log(num1 > num2);
             console.log(num1 == num2);// or triple equals
-            console.log((num1 - num2) * (num1 - num2) - 5 * 4);//PEMDAS question does pemdas work in javascript
+            console.log(eval((5-4)*(4+3)*6-4));//PEMDAS question does pemdas work in javascript
             return;
         }
         function booleans() {
-            console.log("Booleans");
+            console.log("|--Booleans--|");
             let bool1 = true, bool2 = false;
             if (bool1) {
                 console.log("Brain");
@@ -74,8 +74,9 @@
             console.log(bool1 == bool2);// or triple equals
             return;
         }
+        console.log(booleans());
         function shorthandAssignment() {
-            console.log("ShortHand Assingment Techinques")
+            console.log("|--ShortHand Assingment Techinques--|")
             let result = 0;
             result += 1;
             console.log(result);
@@ -83,6 +84,7 @@
             console.log(result);
             return;
         }
+        console.log(shorthandAssignment());
     </script>
 </body>
 
