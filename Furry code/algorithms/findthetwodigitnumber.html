@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find The Two Digit Number</title>
+</head>
+<body>
+    <script>
+        function findTheTwoDigitNumber() {
+            for (let i = 0; i <= 9; i++) {
+                for (let j = 0; j <=9; j++) {
+                    let normal = (Number(i) * 10) + (Number(j));
+                    let reversed = (Number(j) * 10) + (Number(i));
+                    if (((Number(i) + Number(j)) * 4) - 3 == normal) {
+                        console.log("First One Passes");
+                        if (Number(normal) + 36 == reversed) {
+                            return normal;
+                            } 
+                        }
+                    }
+                }
+            }
+        console.log(findTheTwoDigitNumber());
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nth Digit</title>
+</head>
+<body>
+    <script>
+        function run() {
+            console.assert(generate(5) == "12345",  "1 failed");
+            console.assert(generate(10) == "12345678910", "2 failed");
+            console.assert(generate(15) == "123456789101112131415", "3 failed");
+            console.assert(generate(20) == "1234567891011121314151617181920", "4 failed");
+            console.assert(generate(2) == "12", "5 failed");
+            console.assert(nthDigit(15, 15) == 2, "6 failed");
+            console.assert(nthDigit(5, 5) == 5, "7 failed");
+            console.assert(nthDigit(10, 10) == 1, "8 failed");
+            console.assert(nthDigit(12, 12) == 1, "9 failed");
+            console.assert(nthDigit(17, 17) == 3, "10 failed");
+        }
+        function generate(num) {
+            let i = "";
+            for (let j = 1; j <= num; j++) {
+                i+=j;
+            }
+            return i;
+        }
+        function nthDigit(upTo, n) {
+            let ln = generate(upTo);
+            return ln.charAt(Number(n) - 1);
+        }
+        run();
+    </script>
+</body>
+</html>

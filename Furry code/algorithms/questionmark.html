@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<head>
+    <title>what the... the top of the page!!!!!!!!!!!!!!!</title>
+</head>
+
+<body>
+    <textarea
+        id="inputText"></textarea>
+    <button onclick="checkQuestionMarks()">Check</button>
+    <div id="result"></div>
+    <script>
+        function isNumber(ch) {
+            return ch >= '0' && ch <= '9';
+        }
+
+        function findquestionmarksInListThingymijig(str) {
+            for (let i = 0; i < str.length - 4; i++) {
+                if (isNumber(str[i]) && str[i + 1] == '?' && str[i + 2] == '?' && str[i + 3] == '?' && isNumber(str[i + 4])) {
+                    if (parseInt(str[i]) + parseInt(str[i + 4]) == 10) return true;
+                }
+            }
+            return false;
+        }
+
+        function checkQuestionMarks() {
+            const input = document.getElementById('inputText').value;
+            const result = findquestionmarksInListThingymijig(input);
+            document.getElementById('result').textContent = result;
+        }
+    </script>
+</body>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            grid-gap: 5px;
+            justify-content: center;
+            margin: 20px auto;
+        }
+        .tile {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            text-transform: uppercase;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .correct {
+            background-color: green;
+            color: white;
+        }
+        .present {
+            background-color: orange;
+            color: white;
+        }
+        .absent {
+            background-color: lightgray;
+            color: white;
+        }
+        .input-row {
+            margin: 20px;
+        }
+        .input-row input {
+            font-size: 18px;
+            padding: 5px;
+            width: 150px;
+        }
+        .input-row button {
+            font-size: 18px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wordle Game</h1>
+    <div class="board" id="board"></div>
+    <div class="input-row">
+        <input type="text" id="guess" maxlength="5" placeholder="Enter a 5-letter word">
+        <button onclick="submitGuess()">Submit</button>
+    </div>
+    <p id="message"></p>
+
+    <script>
+        const solution = "apple"; // Change this to your desired word
+        const maxGuesses = 6;
+        let currentRow = 0;
+
+        const board = document.getElementById("board");
+        const message = document.getElementById("message");
+
+        // Initialize the board
+        for (let i = 0; i < maxGuesses; i++) {
+            for (let j = 0; j < 5; j++) {
+                const tile = document.createElement("div");
+                tile.classList.add("tile");
+                tile.id = `tile-${i}-${j}`;
+                board.appendChild(tile);
+            }
+        }
+
+        function submitGuess() {
+            const guessInput = document.getElementById("guess");
+            const guess = guessInput.value.toLowerCase();
+
+            if (guess.length !== 5) {
+                message.textContent = "Please enter a 5-letter word.";
+                return;
+            }
+
+            if (currentRow >= maxGuesses) {
+                message.textContent = "Game over! You've used all your guesses.";
+                return;
+            }
+
+            for (let i = 0; i < 5; i++) {
+                const tile = document.getElementById(`tile-${currentRow}-${i}`);
+                tile.textContent = guess[i];
+
+                if (guess[i] === solution[i]) {
+                    tile.classList.add("correct");
+                } else if (solution.includes(guess[i])) {
+                    tile.classList.add("present");
+                } else {
+                    tile.classList.add("absent");
+                }
+            }
+
+            if (guess === solution) {
+                message.textContent = "Congratulations! You guessed the word!";
+                return;
+            }
+
+            currentRow++;
+            guessInput.value = "";
+
+            if (currentRow === maxGuesses) {
+                message.textContent = `Game over! The word was "${solution}".`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>thurshcrumphreylil</title>
+</head>
+<style>
+    body {
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+        color: #333;
+        text-align: center;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    h1 {
+        color: #2c3e50;
+    }
+</style>
+
+<body>
+    <button onclick="consoleLogStuff()">Find Prime Numbers</button>
+    <h1>Prime Number Finder</h1>
+    <p>meow meow nyan cats will eat ure nose tonight harharhar</p>
+    <script>
+        function isPrime(checkThisNumber) {
+            if (checkThisNumber == 1 || checkThisNumber == 0) {
+                return false;
+            }
+            if (checkThisNumber % 2 == 0 && checkThisNumber !== 2) {
+                return false;
+            }
+            for (let j = 2; j <= Math.sqrt(checkThisNumber); j++) {
+                if (checkThisNumber % j == 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function findSmallestPrimeAfterNumber(number) {
+            if (isNaN(number)) {
+                return null;
+            }
+            if (number < 2) {
+                return 2;
+            }
+            let nextNum = number + 1;
+            while (!isPrime(nextNum)) {
+                nextNum++;
+            }
+            return nextNum;
+        }
+
+        function consoleLogStuff() {
+            const input = prompt('Enter a number:');
+            const number = Number(input);
+            const startTime = performance.now();
+            const result = findSmallestPrimeAfterNumber(number);
+            const endTime = performance.now();
+            console.log(result);
+            console.log(`Time taken: ${(endTime - startTime).toFixed(3)} ms`);
+        }
+    </script>
+</body>
+
+</html>

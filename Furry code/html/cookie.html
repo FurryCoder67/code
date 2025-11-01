@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie Manager</title>
+  <script src="/javascript/coookies.js" defer></script>
+  <link rel="Stylesheet" href="/css/cookies.css">
+</head>
+<body>
+  <h1>Cookie Manager</h1>
+
+  <label for="cookieName">Cookie Name:</label>
+  <input type="text" id="cookieName" placeholder="Enter cookie name">
+  <br>
+
+  <label for="cookieValue">Cookie Value:</label>
+  <input type="text" id="cookieValue" placeholder="Enter cookie value">
+  <br>
+
+  <button onclick="createCookie()">Create Cookie</button>
+  <button onclick="findCookie()">Find Cookie</button>
+  <button onclick="obliterateCookie()">Delete Cookie</button>
+  <button onclick="displayCookies()">Show All Cookies</button>
+
+  <p id="output">Loading cookies...</p>
+</body>
+</html>

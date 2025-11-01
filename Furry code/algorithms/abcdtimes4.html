@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algorithm1</title>
+</head>
+
+<body>
+  <button onclick=run()>RUN</button>
+</body>
+
+</html>
+<script>
+  function run(){
+    for (let a = 1; a < 9; a++){
+      for (let b = 1; b < 9; b++){
+        for (let c = 1; c < 9; c++){
+          for (let d = 1; d < 9; d++){
+            if ((String(a) + String(b) + String(c) + String(d)*4 == String(d) + String(c) + String(b) + String(a))) {
+              alert(a + b + c + d);
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
+</script>

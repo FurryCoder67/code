@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function runTestCases() {
+            let num = breakPieces(6722);
+            console.assert(num[0] == 67, "Break Pieces 1 failed");
+            console.assert(num[1] == 22, "Break Pieces 1 failed");
+            num = breakPieces(2025);
+            console.assert(num[0] == 20, "Break Pieces 2 failed");
+            console.assert(num[1] == 25, "Break Pieces 2 failed");
+            //console.assert(findClosestSqrt(20) == 4, "Closest Sqrt 1 failed");
+            console.assert(findClosestSqrt(25) == 5, "Closest Sqrt 2 failed");
+            //console.assert(findClosestSqrt(41) == 6, "Closest Sqrt 3 failed");
+        }
+        function breakPieces(num) {
+            let numStr = String(num);
+            let result = [];
+            result.push(numStr.slice(0, 2));
+            result.push(numStr.slice(2, 4));
+            return result;
+        }
+        function findClosestSqrt(num) {
+            for (let i = 0; i <= 9; i++) {
+                if ((i * i) > num) {
+                    return i - 1;
+                }
+            }
+        }
+        function solveSqrt(num) {
+            let pieces = breakPieces(num);
+        }
+        runTestCases();
+    </script>
+</body>
+
+</html>

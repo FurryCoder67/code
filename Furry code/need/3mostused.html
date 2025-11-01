@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Top 3 Words</title>
+</head>
+
+<body>
+    <textarea id="text"></textarea><br><br>
+    <button onclick="findWords()">Check Words</button>
+
+    <script>
+        function findWords() {
+            let input = document.getElementById("text").value;
+            input = input.toLowerCase().replace(/[^a-z ]/g, ""); // remove punctuation
+
+            let words = input.split(" ");
+            let counts = {};
+
+            for (let i = 0; i < words.length; i++) {
+                let word = words[i];
+                if (word == "") continue;
+                if (counts[word]) {
+                    counts[word]++;
+                } else {
+                    counts[word] = 1;
+                }
+            }
+
+            let list = [];
+            for (let word in counts) {
+                list.push([word, counts[word]]);
+            }
+
+            for (let i = 0; i < list.length - 1; i++) {
+                for (let j = i + 1; j < list.length; j++) {
+                    if (list[j][1] > list[i][1]) {
+                        let temp = list[i];
+                        list[i] = list[j];
+                        list[j] = temp;
+                    }
+                }
+            }
+
+            for (let i = 0; i < 3 && i < list.length; i++) {
+                console.log(list[i][0] + " (" + list[i][1] + " times)");
+            }
+        }
+    </script>
+</body>
+
+</html>

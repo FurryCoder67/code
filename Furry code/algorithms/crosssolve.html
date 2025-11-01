@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross Solve Algorithm</title>
+</head>
+
+<body>
+    <script>
+        function solveCrossPuzzle() {
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    for (let m = 0; m < 9; m++) {
+                        for (let n = 0; n < 9; n++) {
+                            for (let l = 0; l < 9; l++) {
+                                for (let o = 0; o < 9; o++) {
+                                    for (let p = 0; p < 9; p++) {
+                                        for (let t = 0; t < 9; t++) {
+                                            if ((i + j) / m == 1) {
+                                                if ((n + 5) / l == 1) {
+                                                    if ((o + p + t) == 15) {
+                                                        if ((i+n)/o == 2){
+                                                            if ((j+5)*p){
+                                                                if ((m+l)*t){
+                                                                    if ( i < 9 && j < 9 && m < 9 && n < 9 && l < 9 && o < 9 && p < 9 && t < 9){
+                                                                        if ()
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

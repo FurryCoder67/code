@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look and say Reverse sequence</title>
+</head>
+
+<body>
+    <script>
+        function run() {
+            console.assert(findNumber("6776") == 7777776666666, "1 failed");
+            console.assert(findNumber("3349") == 3339999, "2 failed");
+            console.assert(findNumber("7944") == 99999994444, "3 failed");
+        }
+         function numandcount(num, count) {
+                let final = "";
+                for (let i = 0; i < count; i++) {
+                    final = final + String(num);
+                }
+                console.log(final);
+                return final;
+            }
+        function findNumber(num) {
+            let afterNum = num.split('');
+            let result = "";
+            for (let i = 0; i < afterNum.length; i += 2) {
+                result += numandcount(afterNum[i + 1], afterNum[i]);
+            }
+            return result;
+        }
+        run();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FizzBuzz Counting</title>
+</head>
+
+<body>
+  <button id="button" onclick=countInFizzBuzz(100)>Count in FizzBuzz</button>
+</body>
+
+</html>
+<style>
+  button {
+  background-color: #00ff08; 
+  color: #fff; 
+  border: none; 
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px; 
+  font-family: Arial, sans-serif; 
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+}
+
+button:hover {
+  background-color: #0cb300af; 
+}
+
+button:active {
+  background-color: #007f3396; 
+}
+
+button:disabled {
+  background-color: #cccccc; 
+  cursor: not-allowed;
+}
+
+* {
+  text-align: center;
+  text-decoration-thickness: 10;
+}
+</style>
+<script>
+function countInFizzBuzz(limit) {
+  const outputContainer = document.body;
+  for (let i = 1; i <= limit; i++) {
+    let result;
+    if (i % 3 === 0 && i % 5 === 0) {
+      result = "FizzBuzz";
+    } else if (i % 3 === 0) {
+      result = "Fizz";
+    } else if (i % 5 === 0) {
+      result = "Buzz";
+    } else {
+      result = i;
+    }
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = result; 
+    outputContainer.appendChild(paragraph);
+  }
+}
+</script>

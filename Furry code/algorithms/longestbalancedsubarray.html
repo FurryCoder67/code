@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Longest Balanced Subarray Finder</title>
+</head>
+
+<body>
+    <script>
+        function findSubarray(arr) {
+            let longest = 0, ones = 0, zeroes = 0;
+            for (let i = 0; i < arr.length; i++) {
+                if (i == 0) {
+                 zeroes++;
+                } else {
+                 ones++;
+                }
+                if (ones == zeroes) {
+                    longest += 2;
+                }
+           }
+           return longest;
+        }
+        console.log(findSubarray([0, 1]));
+    </script>
+</body>
+
+</html>

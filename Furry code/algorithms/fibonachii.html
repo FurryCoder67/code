@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta author="POVLOL21">
+    <title>Fibonachii Finder</title>
+</head>
+<body>
+    <script>
+        function fibonachii(num) {
+            let currentFib = 0;
+            let minus1 = 1;
+            let minus2 = 0;
+            if (num == 1) {
+                return 0;
+            } else if (num == 2) {
+                return 1;
+            }
+            for (let i = 3; i <= num; i++) {
+                currentFib = minus1 + minus2;
+                minus2 = minus1;
+                minus1 = currentFib;
+            }
+            return currentFib;
+        }
+    </script>
+    <script>
+        console.assert(fibonachii(1) == 0, "1 is... wait for it... False!");
+        console.assert(fibonachii(2) == 1, "2 is... wait for it... False!");
+        console.assert(fibonachii(3) == 1, "3 is... wait for it... False!");
+        console.assert(fibonachii(4) == 2, "4 is... wait for it... False!");
+        console.assert(fibonachii(5) == 3, "5 is... wait for it... False!");
+    </script>
+</body>
+</html>

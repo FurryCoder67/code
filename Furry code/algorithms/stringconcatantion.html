@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Concatenation</title>
+</head>
+<body>
+    <script>
+        function joinTwoStrings(num1, num2) {
+            console.log("num1 is " + num1);
+            console.log("num2 is " + num2);
+            let mathSymbols = ["+", "-", "/", "*"];
+            let expression = num1 + mathSymbols[1] + num2 + mathSymbols[3] + (Number(num1) + Number(num2));
+            //this is what i needed help with;
+            console.log("Result of " + expression + " is: " + eval(expression));
+            return expression;
+        }
+    </script>
+    <button onclick="joinTwoStrings(prompt('wuza str 1'), prompt('wuza str 2'))"></button>
+</body>
+</html>

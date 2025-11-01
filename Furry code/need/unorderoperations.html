@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Operations</title>
+</head>
+
+<body>
+    <script>
+        function unorderOperations(operations, numbers) {
+            if (numbers.length < 2) return numbers[0] || 0;
+
+            const repeatedOps = [];
+            for (let i = 0; i < numbers.length - 1; i++) {
+                repeatedOps.push(operations[i % operations.length]);
+            }
+
+            let expression = '' + numbers[0];
+            for (let i = 0; i < repeatedOps.length; i++) {
+                expression += repeatedOps[i] + numbers[i + 1];
+            }
+
+            // Evaluate the expression
+            const result = eval(expression);
+            return result;
+        }
+
+        const ops = ['*', '/'];
+        const nums = [20, 2, 4, 24, 12, 3];
+        console.log(unorderOperations(ops, nums));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function isPrime(checkThisNumber) {
+            if (checkThisNumber == 1 || checkThisNumber == 0) {
+                return false;
+          }
+            if (checkThisNumber % 2 == 0 && checkThisNumber !== 2) {
+               return false;
+         }
+            for (let j = 2; j <= Math.sqrt(checkThisNumber); j++) {
+                if (checkThisNumber % j == 0) {
+                    return false;
+             }
+            }
+            return true;
+        }
+        function farmersPrime() {
+            let listoPimees = [];
+            for (let i = 0; i <= 120; i++) {
+                if (isPrime(i)) {
+                    listoPimees.push(i);
+                }
+            }
+            console.log(listoPimees);
+            for (let h of listoPimees) {
+                for (let c of listoPimees) {
+                    if (h === c) {
+                        continue;
+                    }
+                    for (let p of listoPimees) {          
+                        if (c === p || p === h) {
+                            continue;
+                        }
+                        if (c*(c+h) === p + 120) {
+                            return "Pigs: " + p + " Horses: " + h + " Cows: " + c;
+                        }
+                    }
+                }
+            }
+        }
+        console.log(farmersPrime());
+    </script>
+</body>
+
+</html>

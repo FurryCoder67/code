@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slug Genertor</title>
+</head>
+
+<body>
+    <script>
+        function isLetter(ch) {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            for (let i = 0; i < letters.length; i++) {
+                if (ch === letters[i]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function isNumber(ch) {
+            const numbers = "0123456789";
+            for (let i = 0; i < numbers.length; i++) {
+                if (ch === numbers[i]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function slugGenerator(str) {
+            let reStr = str.toLowerCase();
+            reStr = reStr.split('');
+            for (let i = 0; i < reStr.length; i++) {
+                if ((isLetter(reStr[i]) || isNumber(reStr[i])) && reStr[i] != " ") {
+                    reStr.splice(i, reStr[i]);
+                }
+                if (i == 0 && reStr[i] == " ") {
+                    reStr.splice(0, " ");
+                }
+                if (reStr[i] == " ") {
+                    if (reStr[i] == " " && reStr[i + 1] == " ") {
+                        reStr.splice(i, " ");
+                        reStr[i + 1] == "%20";
+                    } else {
+                        reStr[i] = "%20";
+                    }
+                }
+            }
+            reStr = reStr.join('');
+            return reStr;
+        }
+        console.log(slugGenerator("The Sigma mEt Cheweer"));
+    </script>
+</body>
+</html>

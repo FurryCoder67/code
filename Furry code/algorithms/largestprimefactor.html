@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><Label>Largest Prime Factor</Label></title>
+</head>
+<body>
+    <script>
+         function isPrime(checkThisNumber) {
+                if (checkThisNumber == 1 || checkThisNumber == 0) {
+                    return false;
+                }
+                if (checkThisNumber % 2 == 0 && checkThisNumber !== 2) {
+                    return false;
+                }
+                for (let j = 2; j <= Math.sqrt(checkThisNumber); j++) {
+                    if (checkThisNumber % j == 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            function largestPrimeFactor(num) {
+                for (let i = num; i > 0; i--) {
+                    if (num % 10000 == 0) {
+                        console.log("Still Working")
+                    }
+                    if (num % i == 0 && isPrime(i)) {
+                        console.log(i);
+                        return i;
+                    }
+                }
+            }
+    </script>
+    <script> 
+        console.assert(largestPrimeFactor(5) == 5, "1 failed");
+        console.assert(largestPrimeFactor(7) == 7, "2 failed");
+        console.assert(largestPrimeFactor(12) == 3, "3 failed");
+        console.assert(largestPrimeFactor(13195) == 29, "4 failed");
+    </script>
+</body>
+</html>

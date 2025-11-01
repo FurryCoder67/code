@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IPv4 Validator</title>
+</head>
+
+<body>
+    <script>
+        function validate(str) {
+            const parts = str.split(".");
+            if (parts.length !== 4) {
+                console.log(false);
+                return;
+            }
+
+            for (let i = 0; i < parts.length; i++) {
+                const num = parts[i];
+
+                if (num === "" || isNaN(num)) {
+                    console.log(false);
+                    return;
+                }
+
+                const intNum = Number(num);
+
+                if (intNum < 0 || intNum > 255 || (num.length > 1 && num[0] === "0")) {
+                    console.log(false);
+                    return;
+                }
+            }
+
+            console.log(true);
+        }
+
+        validate("192.168.1.1");
+        validate("256.100.50.25");
+        validate("01.2.3.4");
+        validate("192.168.1");     
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function reverseparenthesis(str) {
+            let result = [];
+
+            for (let char of str) {
+                if (char == ')') {
+                    let temp = '';
+                    while (result.length && result[result.length - 1] !== '(') {
+                        temp += result.pop();
+                    }
+                    result.pop();
+                    for (let reversedChar of temp) {
+                        result.push(reversedChar);
+                    }
+                    result.push('(');
+                } else {
+                    result.push(char);
+                }
+            }
+
+            return result.filter(c => c !== '(' && c !== ')').join('');
+        }
+
+        console.log(reverseparenthesis("a(bc(def)g)h"));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function removeHtmlTags(str) {
+            let result = "", writeToString = true;
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] == "<") {
+                    writeToString = false;
+                    continue;
+                }
+                if (str[i] == ">") {
+                    writeToString = true;
+                    continue;
+                }
+                if (writeToString) {
+                    result+=str[i];
+                }
+            }
+            return result;
+        }
+        console.log(removeHtmlTags("<button>cherlok goobo cherm</button>"));
+    </script>
+</body>
+
+</html>

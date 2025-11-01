@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm1</title>
+</head>
+
+<body>
+    <button onclick=run()>RUN</button>
+</body>
+
+</html>
+<script>
+    function run() {
+        let yippeeididit = BigInt(Math.pow(2, 2048));
+        for (let x = 1; x <= 1000; x++) {
+            const mybigeeanswer = BigInt(Math.pow(x, x));
+            if (mybigeeanswer === yippeeididit) {
+                alert(x);
+                return;
+            }
+        }
+    }
+
+</script>

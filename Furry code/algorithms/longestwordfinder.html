@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Word Finder</title>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<script>
+
+    function isLetterOrNumber(ch) {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        for (let i = 0; i < letters.length; i++) {
+            if (ch == letters[i]) {
+                return true;
+            }
+            const numbers = "0123456789";
+            for (let i = 0; i < numbers.length; i++) {
+                if (ch == numbers[i]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    function LongestWord(sen) {
+        let currentLetter = "";
+        let currentWord = "";
+        let longestWordSoFar = "";
+        for (let i = 0; i < sen.length; i++) {
+            if (isLetterOrNumber(sen[i]) == true) {
+                currentLetter = sen[i];
+                currentWord = String(currentWord) + String(currentLetter);
+            } else {
+                if (currentWord.length > longestWordSoFar.length) {
+                    longestWordSoFar = currentWord;
+                }
+                currentWord = "";
+            }
+        }
+        if (currentWord.length > longestWordSoFar.length) {
+            longestWordSoFar = currentWord;
+        }
+        return longestWordSoFar;
+    }
+</script>
+<script>
+    function test1() {
+        if (LongestWord("@!1234") != "1234") {
+            console.log("1 failed");
+        }
+    }
+    function test2() {
+        if (LongestWord("    ") != "") {
+            console.log("2 failed");
+        }
+    }
+    function test3() {
+        if (LongestWord(".!!") != "") {
+            console.log("3 failed");
+        }
+    }
+    function test4() {
+        if (LongestWord("5!ogyug har") != "ogyug") {
+            console.log("4 failed");
+        }
+    }
+    function test5() {
+        if (LongestWord("chimpy monkey") != "chimpy") {
+            console.log("5 failed");
+        }
+    }
+    function test6() {
+        if (LongestWord("dska;fjh iuehfkdsa lhfe hfupei halkjd hfaiues hlkda hfiuesh fkjdhaeiulh kjd hfiues hfeashfe lis hliues hfkjdshfliuf hefaudhjes ufhkjd hfaesu fjaesgkfygeskjshfajhdkhfauehf kuhe fuh ushe fjsheauhfkjdshfue hfajkhs eahhdhs fakaheslfuhlkuda fsejkahd iuflhesaiuhfeljdsah fiueslh adjhfiu") != "fjaesgkfygeskjshfajhdkhfauehf") {
+            console.log("6 failed");
+        }
+    }
+    function test7() {
+        if (LongestWord(". . . . . . . ") != "") {
+            console.log("7 failed");
+        }
+
+    }
+    function test8() {
+        if (LongestWord("!@#$%^&*()") != "") {
+            console.log("8 failed");
+        }
+
+    }
+    test1();
+    test2();
+    test3();
+    test4();
+    test5();
+    test6();
+</script>

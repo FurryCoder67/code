@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Valid Parenthesis Combinations</title>
+    <script>
+        function generateParentheses(n, current = "", open = 0, close = 0, result = []) {
+            if (current.length === n * 2) {
+                result.push(current);
+                return;
+            }
+            
+            if (open < n) {
+                generateParentheses(n, current + "(", open + 1, close, result);
+            }
+            if (close < open) {
+                generateParentheses(n, current + ")", open, close + 1, result);
+            }
+        }
+
+        function calculate() {
+            const inputElement = document.getElementById("inputN");
+            const resultElement = document.getElementById("result");
+            const n = parseInt(inputElement.value);
+
+            if (isNaN(n) || n < 0) {
+                resultElement.innerText = "Please enter a valid non-negative number.";
+                return;
+            }
+
+            let validCombinations = [];
+            generateParentheses(n, "", 0, 0, validCombinations);
+
+            resultElement.innerHTML = `<strong>Total number of combinations:</strong> ${validCombinations.length}
+                                       <br><br><strong>Valid ${n}-pair parentheses combinations:</strong><br>${validCombinations.join("<br>")}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Valid Parenthesis Combinations</h1>
+    <input type="number" id="inputN" placeholder="Enter a number">
+    <button onclick="calculate()">Generate</button>
+    <p id="result"></p>
+</body>
+</html>

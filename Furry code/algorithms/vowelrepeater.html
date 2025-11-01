@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vowel Repeater</title>
+</head>
+<body>
+    <script>
+        function isVowel(char) {
+            let vowels = "AEIOUaeiou"
+            for (let i = 0; i < vowels.length; i++) {
+                if (char == vowels[i]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function vowelRepeater(str) {
+            let vowelCount = 1;
+            let result;
+            for (let i = 0; i < str.length; i++) {
+                if (isVowel(i) == true) {
+                    for (let j = 0; j < vowelCount; j++) {
+                        result = str.slice(0, i) + str.slice(i);
+                        console.log(result);
+                    }
+                }
+            }
+            return result;
+        }
+        console.log(vowelRepeater("hello world"));
+    </script>
+</body>
+</html>

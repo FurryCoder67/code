@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Checker</title>
+</head>
+
+<body>
+    <textarea id="myTextarea" placeholder="Type something here..."></textarea>
+  <button onclick="findPairs()">Submit</button>
+</body>
+
+</html>
+<script>
+    function findPairs(str) {
+let pairs = new Array(str.length).fill(null);
+
+        for (let i = 0; i < str.length; i++) {
+            if (parseInt(str[i], 10) + parseInt(str[str.length - i - 1], 10) === str.length) {
+                pairs[i] = [str[i], str[str.length - i - 1]];
+            }
+        }
+
+        return pairs.filter(pair => pair !== null);
+    }
+
+</script>

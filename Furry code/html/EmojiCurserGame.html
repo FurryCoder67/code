@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Cursor Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #0088ff;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #emoji-display {
+      font-size: 5rem;
+      margin: 20px 0;
+    }
+
+    #game-area {
+      height: 80vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: default;
+    }
+
+    .emoji {
+      font-size: 3rem;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Emoji Cursor Game</h1>
+  <p>Click an emoji to change your cursor!</p>
+  <div id="emoji-display">🎯</div>
+  <div id="game-area">
+    <span class="emoji">😀</span>
+    <span class="emoji">🎉</span>
+    <span class="emoji">🔥</span>
+    <span class="emoji">🌟</span>
+    <span class="emoji">🍕</span>
+    <span class="emoji">😘</span>
+    <span class="emoji">😁</span>
+    <span class="emoji">👌</span>
+    <span class="emoji">🐮</span>
+    <span class="emoji">🫎</span>
+    <span class="emoji">🐕</span>
+    <span class="emoji">😘</span>
+    <span class="emoji">🐶</span>
+    <span class="emoji">🐕‍🦺</span>  
+    <span class="emoji">🐩</span> 
+  </div>
+
+  <script>
+    const emojis = document.querySelectorAll('.emoji');
+    const emojiDisplay = document.getElementById('emoji-display');
+    const gameArea = document.getElementById('game-area');
+
+    emojis.forEach(emoji => {
+      emoji.addEventListener('click', () => {
+        const selectedEmoji = emoji.textContent;
+        emojiDisplay.textContent = selectedEmoji;
+        gameArea.style.cursor = `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">${selectedEmoji}</text></svg>') 16 16, auto`;
+      });
+    });
+  </script>
+</body>
+</html>

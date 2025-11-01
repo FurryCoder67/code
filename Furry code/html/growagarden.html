@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garden Game</title>
+    <link rel="stylesheet" href="/css/growagarden.css" />
+</head>
+
+<body>
+    <h1>🌱 Garden Game</h1>
+
+    <div class="stats">
+        <p>🌾 Seeds: <span id="seedCount">0</span></p>
+        <p>🧺 Plants Ready: <span id="plantsReady">0</span></p>
+        <p>🟡 Shuckles: <span id="shuckleCount">5000</span></p>
+    </div>
+
+    <div class="buttons">
+        <button onclick="togglePanel('seedShop')">🛒 Seed Shop</button>
+        <button onclick="togglePanel('petShop')">🥚 Pet Shop</button>
+        <button onclick="togglePanel('sellPanel')">💰 Sell Plants</button>
+    </div>
+
+    <div id="seedShop" class="panel">
+        <h2>🌾 Buy Seeds</h2>
+        <select id="seedType">
+            <option value="sunflower">Sunflower 🌻 (5 Shuckles)</option>
+            <option value="tomato">Tomato 🍅 (7 Shuckles)</option>
+            <option value="corn">Corn 🌽 (10 Shuckles)</option>
+        </select>
+        <button onclick="buySeed()">Buy Seed</button>
+    </div>
+
+    <div id="petShop" class="panel">
+        <h2>🥚 Hatch Pet</h2>
+        <button onclick="buyEgg('common')">Common Egg (100 Shuckles)</button>
+        <button onclick="buyEgg('rare')">Rare Egg (200 Shuckles)</button>
+        <button onclick="buyEgg('mythical')">Mythical Egg (2000 Shuckles)</button>
+        <ul id="petList"></ul>
+    </div>
+
+    <div id="sellPanel" class="panel">
+        <h2>💰 Sell Grown Plants</h2>
+        <button onclick="sellPlants()">Sell All</button>
+    </div>
+
+    <div class="garden">
+        <div class="plot-container">
+            <h3>Plot 1</h3>
+            <button onclick="plantSeed(0)">Plant Seed</button>
+            <div class="plot"></div>
+        </div>
+        <div class="plot-container">
+            <h3>Plot 2</h3>
+            <button onclick="plantSeed(1)">Plant Seed</button>
+            <div class="plot"></div>
+        </div>
+    </div>
+
+    <script src="/javascript/growagarden.js"></script>
+</body>
+
+</html>

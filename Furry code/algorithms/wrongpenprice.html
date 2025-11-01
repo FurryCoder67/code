@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<script>
+function getTheRealPenPrice() {
+    for (let i = 1; i <= 9; i++) { 
+        for (let y = 0; y <= 9; y++) { 
+            let price = i * 10 + y; 
+            let reversedPrice = y * 10 + i;
+            let priceDifference = Math.abs(price - reversedPrice);
+            let digitSum = i + y;
+
+            if (priceDifference == 27 && digitSum == 15) {
+                return price; 
+            }
+        }
+    }
+}
+
+console.log(getTheRealPenPrice());
+
+
+</script>

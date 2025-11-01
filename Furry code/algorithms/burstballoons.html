@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balloon Popping</title>
+</head>
+
+<body>
+    🐕🐕🐕🐕🐕🐕<br/>🐕🐕🐕🐕🐕🐕<br/>🐏🐏🐑🐑😛<br />😎🪭🆒🆒🆒<br />🆒🔪👩‍🍳👨‍🍳🧑‍🍳<br />🤓🤓🤓🤓😛<br />(❁´◡`❁)<br />(^///^)<br />(*/ω＼*)<br />☆*: .｡. o(≧▽≦)o .｡.:*☆<br />(●'◡'●)<br />╰(*°▽°*)╯
+    <script>
+        let listOfUniques = [];
+        let char = null;
+        function findAllUniqueElements(list1, list2) {
+            let listOfUniques = [];
+            for (let i = 0; i < list1.length; i++) {
+                if (isUniqueToArray(list1[i], list2)) {
+                    listOfUniques.push(list1[i]);
+                }
+            }
+            for (let j = 0; j < list2.length; j++) {
+                if (isUniqueToArray(list2[j], list1)) {
+                    listOfUniques.push(list2[j]);
+                }
+            }
+            return listOfUniques;
+        }
+        function isUniqueToArray(item, arr) {
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] === item) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        function burstBalloons(arr) {
+            
+        }
+    </script>
+</body>
+
+</html>

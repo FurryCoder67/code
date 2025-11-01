@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rectangle Area</title>
+</head>
+<body>
+    <script>
+        function Rectangle(width, length) {
+            this.width = width;
+            this.length = length;
+            this.area = function() {
+                return width*length;
+            }
+        }
+        let rectangleArea = new Rectangle(5, 10).area();
+        console.log(rectangleArea);
+    </script>
+</body>
+</html>

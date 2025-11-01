@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher</title>
+</head>
+
+<body>
+    <h1>Caesar Cipher</h1>
+    <textarea id="CaesarThingNeededToBeDeciphered" rows="4" cols="40">abcdefghijklmnopqrstuvwxyz</textarea><br>
+    <button onclick="caesarCipherEncodeButton()">Encode</button>
+    <button onclick="caesarCipherDecodeButton()">Decode</button>
+    <script>
+        // Caesar cipher function: shifts each letter by 'shift' positions in the alphabet
+        function caesarCipher(text, shift) {
+            let result = ""; // This will store the final encoded/decoded string
+            const alphabet = "abcdefghijklmnopqrstuvwxyz"; // Reference alphabet for shifting
+
+            // Loop through each character in the input text
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i]; // Current character
+                let lowerC = c.toLowerCase(); // Lowercase version for comparison
+
+                // Loop through the alphabet to find a match for the current character
+                for (let j = 0; j < 26; j++) {
+                    // If the character matches a letter in the alphabet
+                    if (lowerC == alphabet[j]) {
+                        // Calculate the shifted index, wrapping around using modulo
+                        let idx = (j + shift) % 26;
+                        if (idx < 0) idx += 26; // Handle negative shifts (decoding)
+                        let newChar = alphabet[idx]; // Get the shifted character
+
+                        // keep the original
+                        if (c == c.toUpperCase()) {
+                            newChar = newChar.toUpperCase();
+                        }
+                        c = newChar; // Replace the character with the shifted one
+                        break; // Exit the alphabet loop once matched
+                    }
+                }
+                // If not a letter, character stays the same (punctuation, numbers, etc.)
+                result += c;
+            }
+            return result; // Return the encoded/decoded string
+        }
+
+        // Adds a dropdown to select the Caesar cipher shift value
+        const textarea = document.getElementById('CaesarThingNeededToBeDeciphered');
+        const shiftDropdown = document.createElement('select');
+        shiftDropdown.id = 'caesarShiftSelect';
+        // Populate dropdown with shift values from -25 to 25
+        for (let i = -25; i <= 25; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = i;
+            if (i === 3) option.selected = true; // Default shift is 3
+            shiftDropdown.appendChild(option);
+        }
+        // Insert the dropdown after the textarea
+        textarea.parentNode.insertBefore(shiftDropdown, textarea.nextSibling);
+
+        // Helper to get the selected shift value from the dropdown
+        function getSelectedShift() {
+            return parseInt(document.getElementById('caesarShiftSelect').value, 10);
+        }
+
+        // Encode button handler: encodes the text using the selected shift
+        function caesarCipherEncodeButton() {
+            const para = document.getElementById('CaesarThingNeededToBeDeciphered').value;
+            const shift = getSelectedShift();
+            const result = caesarCipher(para, shift);
+            document.getElementById('CaesarThingNeededToBeDeciphered').value = result;
+        }
+
+        // Decode button handler: decodes the text using the negative of the selected shift
+        function caesarCipherDecodeButton() {
+            const para = document.getElementById('CaesarThingNeededToBeDeciphered').value;
+            const shift = getSelectedShift();
+            const result = caesarCipher(para, -shift);
+            document.getElementById('CaesarThingNeededToBeDeciphered').value = result;
+        }
+
+        // ----------------- Tests -----------------
+        // These console.assert statements check that the caesarCipher function works as expected
+
+        console.assert(caesarCipher("abc", 3) == "def", 'Test 1 failed');
+        console.assert(caesarCipher("xyz", 3) == "abc", 'Test 2 failed');
+        console.assert(caesarCipher("def", -3) == "abc", 'Test 3 failed');
+        console.assert(caesarCipher("AbC", 3) == "DeF", 'Test 4 failed');
+        console.assert(caesarCipher("Khoor, Zruog!", -3) == "Hello, World!", 'Test 5 failed');
+        console.assert(caesarCipher("123!?", 3) == "123!?", 'Test 6 failed');
+    </script>
+    <script>

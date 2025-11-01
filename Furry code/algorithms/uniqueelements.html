@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Elements Finder</title>
+</head>
+<script>
+    let listOfUniques = [];
+    let char = null;
+    function run() {
+        let arr1 = [43, 5, 5, 4, 3, 56, 346, 45, 6, 65, 6, 54];
+        let arr2 = [43, 6, 45, 645, 65, 7, 4, 64, 67, 69, 21];
+        let uniques = findAllUniqueElements(arr1, arr2);
+        console.log(uniques.join(","));
+    }
+    function findAllUniqueElements(list1, list2) {
+        let listOfUniques = [];
+        // Find numbers in list1 not in list2 
+        for (let i = 0; i < list1.length; i++) {
+            if (isUniqueToArray(list1[i], list2)) {
+                listOfUniques.push(list1[i]);
+            }
+        }
+        // Find numbers in list2 not in list1
+        for (let j = 0; j < list2.length; j++) {
+            if (isUniqueToArray(list2[j], list1)) {
+                listOfUniques.push(list2[j]);
+            }
+        }
+        return listOfUniques;
+    }
+    function isUniqueToArray(item, arr) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === item) {
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+<script>
+    // Test 1: No unique elements
+    let arr3 = [1, 2, 3];
+    let arr4 = [1, 2, 3];
+    let expected2 = [];
+    console.assert(findAllUniqueElements(arr3, arr4), expected2, 'Test 2 failed');
+
+    // Test 2: All unique elements
+    let arr5 = [1, 2, 3];
+    let arr6 = [4, 5, 6];
+    let expected3 = [1, 2, 3, 4, 5, 6];
+    console.assert(findAllUniqueElements(arr5, arr6), expected3), 'Test 3 failed';
+
+    // Test 3: One array empty
+    let arr7 = [];
+    let arr8 = [7, 8, 9];
+    let expected4 = [7, 8, 9];
+    console.assert(findAllUniqueElements(arr7, arr8), expected4), 'Test 4 failed';
+
+    // Test 4: Both arrays empty
+    let arr9 = [];
+    let arr10 = [];
+    let expected5 = [];
+    console.assert(findAllUniqueElements(arr9, arr10), expected5), 'Test 5 failed';
+
+    // Test 5: Duplicates in one array only
+    let arr11 = [1, 1, 2, 3];
+    let arr12 = [2, 3, 4];
+    let expected6 = [1, 1, 4];
+    console.assert(findAllUniqueElements(arr11, arr12), expected6, 'Test 6 failed');
+
+    // Test 6: Negative numbers
+    let arr13 = [-1, 0, 1];
+    let arr14 = [0, 2, 3];
+    let expected7 = [-1, 1, 2, 3];
+    console.assert(findAllUniqueElements(arr13, arr14), expected7), 'Test 7 failed';
+
+    // Test 7: Large numbers
+    let arr15 = [1000000, 2];
+    let arr16 = [2, 999999];
+    let expected8 = [1000000, 999999];
+    console.assert(findAllUniqueElements(arr15, arr16), expected8), 'Test 8 failed';
+</script>
+<button onclick="run()">UTF-8</button>
+</body>
+
+</html>

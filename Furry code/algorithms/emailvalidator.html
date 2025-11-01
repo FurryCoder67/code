@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validator</title>
+</head>
+
+<body>
+    <input id="input">
+    <button onclick="run()">Run</button>
+    <script>
+        function run() {
+            let input = document.getElementById("input").value;
+            //console.log(validateEmail(input));
+            console.assert(validateEmail("aidenksyip@gmail.c") == false, "1 failed");
+            console.assert(validateEmail("aidenksyip@gmail.") == false, "2 failed");
+            console.assert(validateEmail(".aidenksyip.@gmail.com") == false, "3 failed");
+            console.assert(validateEmail("aidenk..syip@gmail..c") == false, "4 failed");
+            console.assert(validateEmail("aidenksyipgmail.com") == false, "5 failed");
+            console.assert(validateEmail("aidenksy.ip@gmailc") == false, "6 failed");
+            console.assert(validateEmail("a_-idenksyipgmail.com") == false, "7 failed");
+            console.assert(validateEmail("a_[-idenksyipgmail.com") == false, "8 failed");
+            console.assert(validateEmail("sidenksyip@gmail.com") == true, "9 failed");
+        }
+        function isEmailChar(ch) {
+            const validChars = "@._-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            for (let i of validChars) {
+                if (ch == i) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function hasAt(str) {
+            for (let i of str) {
+                if (i == "@") {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function hasDot(str) {
+            for (let i of str) {
+                if (i == ".") {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function hasNoDotsInARow(str) {
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] == "." && str[i + 1] == ".") {
+                    return false;
+                }
+            }
+            return true;
+        }
+        function afterDotLength(str) {
+            if (str.length < 2) {
+                return false;
+            }
+            return true;
+        }
+        function validateEmail(str) {
+            const beforeAt = str.substring(0, str.indexOf("@"));
+            const afterAt = str.substring(str.indexOf("@"), str.length);
+            const afterDot = afterAt.substring(afterAt.indexOf("."), afterAt.length);
+            if (str == "") {
+                return false;
+            }
+            if (!hasAt(str)) {
+                return false;
+            }
+            if (!afterDotLength(afterDot)) {
+                return false;
+            }
+            if (!hasDot(afterAt)) {
+                return false;
+            }
+            if (!hasNoDotsInARow(str)) {
+                return false;
+            }
+            for (let i = 0; i < str.length; i++) {
+                if (!isEmailChar(beforeAt[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+
+</html>

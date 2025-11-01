@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look and say sequence</title>
+</head>
+<body>
+    <script>
+        function findNumber(num) {
+            let result = [];
+            let count = 1;
+            let arr = num.split('');
+            console.log("arr:"+arr);
+            for (let i = 0; i < arr.length; i++) {
+                if (num[i] == num[i + 1]) {
+                    count++;
+                } else{
+                    result.push(count);
+                    result.push(num[i]);
+                    count = 1;
+                }
+            }
+            result = result.join("");
+            console.log(result);
+            return result;
+        }
+        findNumber("111222333444455555");
+    </script>
+</body>
+</html>

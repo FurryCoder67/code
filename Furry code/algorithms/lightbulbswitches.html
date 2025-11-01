@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+</body>
+
+</html>
+<script>
+function lightbulbProblem(numBulbs) {
+    const bulbs = Array(numBulbs).fill(false);
+
+    for (let pass = 1; pass <= numBulbs; pass++) {
+        for (let i = pass - 1; i < numBulbs; i += pass) {
+            bulbs[i] = !bulbs[i];
+        }
+    }
+
+    for (let i = 0; i < numBulbs; i++) {
+        if (bulbs[i]) {
+            console.log(i + 1);
+        }
+    }
+}
+
+lightbulbProblem(20);
+</script>

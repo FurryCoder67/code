@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function gcd(num1, num2) {
+            let smaller = 0;
+            if (num1 < num2) {
+                smaller = num1;
+            } else {
+                smaller = num2;
+            }
+            for (let i = smaller; i > 0; i--) {
+                if (num1 % i == 0 && num2 % i == 0) {
+                    return i;
+                }
+            }
+        }
+    </script>
+    <script>/*
+console.assert(gcd(17, 48) == 1, "1 failed");
+console.assert(gcd(16, 24) == 8, "2 failed");
+console.assert(gcd(24, 48) == 24, "3 failed"); */
+        console.assert(gcd(2, 4) == 2, "4 failed");
+        console.log("chimpy monkeys are very tasty");
+    </script>
+</body>
+
+</html>

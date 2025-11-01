@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valid Username Checker</title>
+</head>
+
+<body>
+    <button onclick="alert(CodelandUsernameValidation(prompt('Enter a username:')))">Check Username</button>
+</body>
+
+</html>
+<script>
+    function isLetter(ch) {
+        for (let i = 0; i < letters.length; i++) {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            if (ch === letters[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+    function isNumber(ch) {
+        const numbers = "0123456789";
+        for (let i = 0; i < numbers.length; i++) {
+            if (ch === numbers[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+    function isUnderscore(ch) {
+        const underscore = "_";
+        return ch == underscore;
+    }
+
+    function CodelandUsernameValidation(str) {
+        const minLength = 4;
+        const maxLength = 25;
+
+        if (str.length < minLength || str.length > maxLength) {
+            return false;
+        }
+
+        if (!isLetter(str[0])) {
+            return false;
+        }
+
+        if (isUnderscore(str[str.length - 1])) {
+            return false;
+        }
+
+        for (let i = 0; i < str.length; i++) {
+            let ch = str[i];
+            if (!(isLetter(ch) || isNumber(ch) || isUnderscore(ch))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+</script>

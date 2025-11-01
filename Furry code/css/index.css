@@ -1,0 +1,81 @@
+body {
+  animation: changeBgColor 10s infinite;
+}
+
+.button {
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button:hover {
+  transform: scale(0.9);
+}
+
+.button1 {
+  background-color: white;
+  color: black;
+  border: 2px solid #04AA6D;
+}
+
+.green-text {
+  color: #00FF00;
+}
+
+@keyframes changeBgColor {
+  0% {
+    background-color: #FF5733;
+  }
+
+  25% {
+    background-color: #33FF57;
+  }
+
+  50% {
+    background-color: #3357FF;
+  }
+
+  75% {
+    background-color: #F033FF;
+  }
+
+  100% {
+    background-color: #FF33A1;
+  }
+}
+
+.animated-text {
+  animation: slideIn 2s;
+}
+
+.animated-img {
+  animation: slideIn 2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Pythagorean Triplet</title>
+</head>
+
+<body>
+    <script>
+        const tripletFinder = {
+            targetSum: 1000,
+
+            isPythagoreanTriplet: function (a, b, c) {
+                return a * a + b * b === c * c;
+            },
+
+            findTriplet: function () {
+                for (let a = 1; a < this.targetSum; a++) {
+                    for (let b = a + 1; b < this.targetSum; b++) {
+                        let c = this.targetSum - a - b;
+                        if (c > b && this.isPythagoreanTriplet(a, b, c)) {
+                            return {
+                                a: a,
+                                b: b,
+                                c: c,
+                                product: a * b * c,
+                                display: function () {
+                                    console.log("Triplet:", this.a, this.b, this.c);
+                                    console.log("Product:", this.product);
+                                    return;
+                                }
+                            };
+                        }
+                    }
+                }
+            }
+        };
+
+        const result = tripletFinder.findTriplet();
+        if (result) {
+            result.display();
+        } else {
+            console.log("No triplet found.");
+        }
+    </script>
+</body>
+
+</html>

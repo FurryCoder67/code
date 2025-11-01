@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathamatical Symbol Finder   </title>
+</head>
+
+<body>
+    <script>
+        function findMathamaticalSymbols() {
+            let mathSymbols = ["*", "-", "/", "+"];
+            for (let i = 0; i <= mathSymbols.length - 1; i++) {
+                for (let j = 0; j <= mathSymbols.length - 1; j++) {
+                    let expression = "5" + mathSymbols[i] + "5" + mathSymbols[j] + "5 == 15";//this is what i needed help with
+                    let evaluatedExpression = Boolean(eval(expression));
+                    if (evaluatedExpression == true) {
+                        console.log("Expression Is " + expression);
+                        return expression;
+                    }
+
+                }
+            }
+        }
+        //console.assert(findMathamaticalSymbols() == "5"  "5" + mathSymbols[j] + "5 == 15", "failed");
+        findMathamaticalSymbols();
+    </script>
+</body>
+
+</html>

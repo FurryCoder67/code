@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Italian Brainrot Character Drag Game</title>
+    <style>
+        body {
+            background: #f8f8f8;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #gameArea {
+            width: 600px;
+            height: 400px;
+            border: 2px solid #2c3e50;
+            margin: 30px auto;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            cursor: grab;
+            user-select: none;
+        }
+
+        select {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Italian Brainrot Character Drag Game</h1>
+    <select id="characterSelect">
+        <option value="Tralalero Tralala">Tralalero Tralala</option>
+        <option value="Tung Tung Tung Sahur">Tung Tung Tung Sahur</option>
+        <option value="Bombardilo Crocodilo">Bombardilo Crocodilo</option>
+        <option value="Brr Brr Patabim">Brr Brr Patabim</option>
+        <option value="Chimpanzeenee Bombaneenee">Chimpanzeenee Bombaneenee</option>
+    </select>
+    <div id="gameArea"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const characterImages = {
+                "Bombardilo Crocodilo": "/images/Bombardino_Crocodilo.webp",
+                "Brr Brr Patabim": "images/Brr Brr Patabim.jpg",
+                "Tralalero Tralala": "images/Tralalero Tralala.jpg",
+                "Tung Tung Tung Sahur": "images/tung tung tung sahur.jpg",
+                "Chimpanzeenee Bombaneenee": "images/chimchim.jpg"
+            };
+
+            const gameArea = document.getElementById("gameArea");
+            const select = document.getElementById("characterSelect");
+            let characterImg = null;
+
+            function createCharacter(name) {
+                if (characterImg) characterImg.remove();
+                characterImg = document.createElement("img");
+                characterImg.src = characterImages[name];
+                characterImg.alt = name;
+                characterImg.className = "character";
+                characterImg.style.width = "80px";
+                characterImg.style.height = "80px";
+                characterImg.style.position = "absolute";
+                characterImg.style.left = "260px";
+                characterImg.style.top = "150px";
+                gameArea.appendChild(characterImg);
+
+                let offsetX, offsetY, dragging = false;
+
+                characterImg.onmousedown = function (e) {
+                    e.preventDefault();
+                    dragging = true;
+                    offsetX = e.clientX - characterImg.offsetLeft - gameArea.offsetLeft;
+                    offsetY = e.clientY - characterImg.offsetTop - gameArea.offsetTop;
+                    characterImg.style.cursor = "grabbing";
+                };
+
+                document.onmousemove = function (e) {
+                    if (!dragging) return;
+                    let x = e.clientX - gameArea.offsetLeft - offsetX;
+                    let y = e.clientY - gameArea.offsetTop - offsetY;
+                    x = Math.max(0, Math.min(gameArea.clientWidth - characterImg.clientWidth, x));
+                    y = Math.max(0, Math.min(gameArea.clientHeight - characterImg.clientHeight, y));
+                    characterImg.style.left = x + "px";
+                    characterImg.style.top = y + "px";
+                };
+
+                document.onmouseup = function () {
+                    dragging = false;
+                    if (characterImg) characterImg.style.cursor = "grab";
+                };
+
+                // Ctrl + Click to open image source in a new tab
+                characterImg.addEventListener("click", (e) => {
+                    if (e.ctrlKey) {
+                        window.open(characterImg.src, "_blank");
+                    }
+                });
+            }
+
+            createCharacter(select.value);
+            select.onchange = function () {
+                createCharacter(this.value);
+            };
+        });
+    </script>
+</body>
+
+</html>

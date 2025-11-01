@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bouncing Cat</title>
+  <style>
+
+#cat {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: url('/images/doge.webp') no-repeat center/cover;
+    border-radius: 50%;
+  }
+
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: lightblue;
+    }
+
+    #canvas {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      border: 2px solid black;
+      background-color: white;
+      overflow: hidden;
+    }
+
+    #cat {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: orange;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas">
+    <div id="cat"></div>
+  </div>
+  <script>
+    const canvas = document.getElementById("canvas");
+    const cat = document.getElementById("cat");
+
+    let x = Math.random() * (canvas.offsetWidth - cat.offsetWidth);
+    let y = Math.random() * (canvas.offsetHeight - cat.offsetHeight);
+    let dx = (Math.random() - 0.5) * 10;
+    let dy = (Math.random() - 0.5) * 10;
+
+    function moveCat() {
+      x += dx;
+      y += dy;
+
+      if (x <= 0 || x + cat.offsetWidth >= canvas.offsetWidth) {
+        dx = -dx;
+        console.log(dx > 0 ? "Moving right" : "Moving left");
+      }
+      if (y <= 0 || y + cat.offsetHeight >= canvas.offsetHeight) {
+        dy = -dy;
+        console.log(dy > 0 ? "Moving down" : "Moving up");
+      }
+
+      cat.style.left = `${x}px`;
+      cat.style.top = `${y}px`;
+
+      requestAnimationFrame(moveCat);
+    }
+
+    cat.style.left = `${x}px`;
+    cat.style.top = `${y}px`;
+
+    moveCat();
+  </script>
+</body>
+</html>

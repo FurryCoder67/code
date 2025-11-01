@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+</head>
+
+<body>
+    <script>
+        function employee(name, Id, salary, bonus) {
+            this.name = name;
+            this.Id = Id;
+            this.salary = salary;
+            this.bonus = bonus;
+            this.totalSalary = function () {
+                return this.salary + this.bonus;
+            }
+            this.getName = function () {
+                return this.name;
+            }
+        }
+        let employee1 = new employee("mommy", 11345, 13, 0);
+        let employee2 = new employee("tatty", 67667, 0, Infinity);
+        let employee3 = new employee("hacker", 12334, 721, 74);
+        let employees = [employee1, employee2, employee3];
+
+        function sortBySalary() {
+
+        }
+        function sortByName(arrayEmployee) {
+                arrayEmployee.sort();
+        }
+        console.log(employee1);
+        console.log(employee2);
+        console.log(employee3);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // --------------------------
+            // Game Setup
+            // --------------------------
+            // Select DOM elements
+            const player = document.getElementById("player");
+            const gameArea = document.getElementById("gameArea");
+            const scoreDisplay = document.getElementById("score");
+            const livesDisplay = document.getElementById("lives");
+            let score = 0;
+            let lives = 3;
+            let gameInterval;
+            // --------------------------
+            // Player Movement
+            // --------------------------
+            document.addEventListener("keydown", (e) => {
+                const currentLeft = player.offsetLeft;
+                if (e.key === "ArrowLeft" && currentLeft > 0) {
+                    player.style.left = currentLeft - 20 + "px";
+                } else if (e.key === "ArrowRight" && currentLeft < gameArea.offsetWidth - player.offsetWidth) {
+                    player.style.left = currentLeft + 20 + "px";
+                }
+            });
+            // --------------------------
+            // Falling Objects
+            // --------------------------
+            function createFallingObject() {
+                const obj = document.createElement("div");
+                obj.classList.add("fallingObject");
+                obj.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - 30)) + "px";
+                obj.style.top = "0px";
+                gameArea.appendChild(obj);
+                moveObject(obj);
+            }
+            function moveObject(obj) {
+                let fallInterval = setInterval(() => {
+                    let objTop = obj.offsetTop;
+                    obj.style.top = objTop + 5 + "px";
+                    // Collision detection
+                    if (isColliding(obj, player)) {
+                        score++;
+                        scoreDisplay.innerText = "Score: " + score;
+                        obj.remove();
+                        clearInterval(fallInterval);
+                    }
+                    // Missed object
+                    if (objTop > gameArea.offsetHeight - obj.offsetHeight) {
+                        lives--;
+                        livesDisplay.innerText = "Lives: " + lives;
+                        obj.remove();
+                        clearInterval(fallInterval);
+                        if (lives <= 0) {
+                            endGame();
+                        }
+                    }
+                }, 50);
+            }
+            // --------------------------
+            // Collision Detection
+            // --------------------------
+            function isColliding(a, b) {
+                const aRect = a.getBoundingClientRect();
+                const bRect = b.getBoundingClientRect();
+                return !(
+                    aRect.top > bRect.bottom ||
+                    aRect.bottom < bRect.top ||
+                    aRect.left > bRect.right ||
+                    aRect.right < bRect.left
+                );
+            }
+            // --------------------------
+            // Game Loop
+            // --------------------------
+            function startGame() {
+                score = 0;
+                lives = 3;
+                scoreDisplay.innerText = "Score: " + score;
+                livesDisplay.innerText = "Lives: " + lives;
+                gameInterval = setInterval(() => {
+                    createFallingObject();
+                }, 1500);
+            }
+            function endGame() {
+                clearInterval(gameInterval);
+                alert("Game Over! Final Score: " + score);
+            }
+    </script>
+</body>
+
+</html>

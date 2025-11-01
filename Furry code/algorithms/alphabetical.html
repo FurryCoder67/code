@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chimphry diaperbrains</title>
+</head>
+
+<body>
+    <textarea id="inputSentence" placeholder="'.:CHIMPY:.'"></textarea><br>
+    <button onclick="checkSentence()">Check</button>
+    <p id="result"></p>
+    <script>
+        function isAlphabetical(word) {
+            for (let i = 0; i < word.length - 1; i++) {
+                if (word[i].toLowerCase() > word[i + 1].toLowerCase()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        function timedFindAlphabeticalOrder(sentence) {
+            const start = performance.now();
+            const result = findAlphabeticalOrder(sentence);
+            const end = performance.now();
+            console.log(`i took took ${end - start}secs to eat mama's nose.`);
+            return result;
+        }
+    </script>
+
+
+    <script>
+        function checkSentence() {
+            const sentence = document.getElementById('inputSentence').value;
+            const word = timedFindAlphabeticalOrder(sentence);
+            document.getElementById('result').textContent =
+                word ? `First first chimp chimp is: ${word}     ;)  :D  ;D  d:  d;` : "No chimp chimps were found ;(";
+        }
+
+        function findAlphabeticalOrder(sentence) {
+            const splitSentence = sentence.split(" ");
+            for (const word of splitSentence) {
+                if (isAlphabetical(word)) {
+                    return word;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+<script>
+    function test1() {
+        if (findAlphabeticalOrder("    ") != "") {
+            console.log("1 failed");
+        }
+    }
+
+    function test2() {
+        if (findAlphabeticalOrder("all the sigma") != "all") {
+            console.log("3 failed");
+        }
+    }
+    test1();
+    test2();
+</script>

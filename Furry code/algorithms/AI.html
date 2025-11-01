@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Italian Brainrot AI Partner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/lib/browser/math.js"></script>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #0a2540 0%, #1b5fa7 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        .copilot-container {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 40px 32px 32px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 480px;
+            width: 95vw;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 0.3em;
+            letter-spacing: -1px;
+        }
+
+        .chat-area {
+            width: 100%;
+            min-height: 260px;
+            max-height: 320px;
+            overflow-y: auto;
+            background: rgba(27, 95, 167, 0.13);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 1em;
+            color: #fff;
+            font-size: 1.08em;
+            box-sizing: border-box;
+        }
+
+        .user-msg {
+            color: #b3e5fc;
+            margin-bottom: 8px;
+            text-align: right;
+        }
+
+        .ai-msg {
+            color: #fff;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .input-row {
+            width: 100%;
+            display: flex;
+            gap: 8px;
+        }
+
+        #userInput {
+            flex: 1;
+            font-family: monospace;
+            font-size: 1.1em;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #b3d1f7;
+            background: #f8fbff;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        #userInput:focus {
+            border: 1.5px solid #1b5fa7;
+        }
+
+        button {
+            background: linear-gradient(90deg, #1b5fa7 0%, #0a2540 100%);
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(27, 95, 167, 0.13);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #0a2540 0%, #1b5fa7 100%);
+            box-shadow: 0 4px 16px rgba(27, 95, 167, 0.18);
+        }
+
+        @media (max-width: 600px) {
+            .copilot-container {
+                padding: 24px 8px 16px 8px;
+            }
+
+            h1 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="copilot-container">
+        <h1>Italian Brainrot AI Partner</h1>
+        <div class="chat-area" id="chatArea">
+            <div class="ai-msg">👋 Hello! I'm your polite AI partner. Ask me anything about coding or math, and I'll do
+                my best to help you.</div>
+        </div>
+        <div class="input-row">
+            <input type="text" id="userInput" placeholder="Type your question here..." autocomplete="off"
+                onkeydown="if(event.key==='Enter'){sendMessage();}">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+<script>
+    function appendMessage(msg, sender) {
+        const chat = document.getElementById('chatArea');
+        const div = document.createElement('div');
+        div.className = sender === 'user' ? 'user-msg' : 'ai-msg';
+
+        // Always print code in a code block if "JavaScript:" is present
+        if (msg.includes('\n\nJavaScript:\n')) {
+            const [answer, codeBlock] = msg.split('\n\nJavaScript:\n');
+            div.innerHTML = `<div>${answer}</div>`;
+            if (codeBlock) {
+                const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+                div.innerHTML += `
+<pre style="background:#222;color:#fff;padding:10px;border-radius:6px;overflow-x:auto;margin-top:8px;"><code id="${codeId}">${codeBlock.replace(/^"+|"+$/g, '')}</code></pre>
+<button onclick="navigator.clipboard.writeText(document.getElementById('${codeId}').textContent)" style="margin-top:6px;padding:4px 12px;border-radius:5px;border:none;background:#1b5fa7;color:#fff;cursor:pointer;">Copy</button>
+`;
+            }
+        } else {
+            div.textContent = msg;
+        }
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function politeReply(text) {
+        const greetings = ["hello", "hi", "hey"];
+        const thanks = ["thank", "thanks", "thx"];
+        const lower = text.toLowerCase();
+        if (greetings.some(g => lower.includes(g))) {
+            return "Hello! How can I assist you with coding or math today?";
+        }
+        if (thanks.some(t => lower.includes(t))) {
+            return "You're very welcome! If you have more questions, feel free to ask.";
+        }
+        if (lower.includes("bye")) {
+            return "Goodbye! Have a wonderful day!";
+        }
+        return null;
+    }
+
+    function tryMathOrCode(text) {
+        try {
+            // Algebraic equations
+            if (text.includes('=') && text.match(/[a-zA-Z]/)) {
+                const [left, right] = text.split('=').map(s => s.trim());
+                const variableMatch = (left + right).match(/[a-zA-Z]/);
+                const variable = variableMatch ? variableMatch[0] : 'x';
+                const solutions = math.evaluate(`solve("${left} = ${right}", "${variable}")`);
+                if (solutions && solutions.length > 0) {
+                    return `The solution is: ${variable} = ${solutions[0]}\n\nJavaScript:\nmath.evaluate('solve("${left} = ${right}", "${variable}")')`;
+                } else {
+                    return "Sorry, I couldn't find a solution to that equation.";
+                }
+            }
+            // Arithmetic
+            if (/^[\d\s+\-*/().,^eE]+$/.test(text.replace(/\^/g, '**'))) {
+                return `The answer is: ${math.evaluate(text.replace(/\^/g, '**'))}\n\nJavaScript:\n"${text.replace(/\^/g, '**')}"`;
+            }
+        } catch (e) {
+            return `Sorry, I couldn't compute that. Please check your input.`;
+        }
+
+        const lower = text.toLowerCase();
+
+        // Reverse a string
+        if (lower.includes("reverse") && lower.includes("string")) {
+            const match = text.match(/reverse (the )?string (["']?)(.+?)\2/i);
+            if (match) {
+                const str = match[3];
+                const reversed = str.split('').reverse().join('');
+                return `Reversed string: "${reversed}"\n\nJavaScript:\n'${str}'.split('').reverse().join('')`;
+            }
+        }
+
+        // Factorial
+        if (lower.includes("factorial")) {
+            const match = text.match(/factorial (of )?(\d+)/i);
+            if (match) {
+                const n = parseInt(match[2]);
+                let fact = 1;
+                for (let i = 2; i <= n; i++) fact *= i;
+                return `Factorial of ${n} is ${fact}\n\nJavaScript:\n(function fact(n){let f=1;for(let i=2;i<=n;i++)f*=i;return f;})(${n})`;
+            }
+        }
+
+        // Is prime
+        if (lower.includes("is") && lower.includes("prime")) {
+            const match = text.match(/is (\d+) (a )?prime/i);
+            if (match) {
+                const n = parseInt(match[1]);
+                let isPrime = n > 1;
+                for (let i = 2; i <= Math.sqrt(n); i++) {
+                    if (n % i === 0) isPrime = false;
+                }
+                return `${n} is ${isPrime ? "a prime" : "not a prime"} number.\n\nJavaScript:\n(function isPrime(n){if(n<=1)return false;for(let i=2;i<=Math.sqrt(n);i++){if(n%i===0)return false;}return true;})(${n})`;
+            }
+        }
+
+        // Sum an array
+        if (lower.includes("sum") && lower.includes("array")) {
+            const match = text.match(/sum (of )?array\s*\[([^\]]+)\]/i);
+            if (match) {
+                const arr = match[2].split(',').map(x => Number(x.trim()));
+                const sum = arr.reduce((a, b) => a + b, 0);
+                return `Sum of [${arr.join(', ')}] is ${sum}\n\nJavaScript:\n[${arr.join(', ')}].reduce((a,b)=>a+b,0)`;
+            }
+        }
+
+        // Sort array
+        if (lower.includes("sort array")) {
+            const match = text.match(/sort array\s*\[([^\]]+)\]/i);
+            if (match) {
+                const arr = match[1].split(',').map(x => Number(x.trim()));
+                const sorted = arr.slice().sort((a, b) => a - b);
+                return `Sorted array: [${sorted.join(', ')}]\n\nJavaScript:\n[${arr.join(', ')}].sort((a, b) => a - b)`;
+            }
+            return `Here's how to sort an array in JavaScript:\n\nJavaScript:\n[3, 1, 2].sort((a, b) => a - b)`;
+        }
+
+        // Capitalize string
+        if (lower.includes("capitalize")) {
+            const match = text.match(/capitalize (the )?string (["']?)(.+?)\2/i);
+            if (match) {
+                const str = match[3];
+                const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
+                return `Capitalized string: "${capitalized}"\n\nJavaScript:\n'${str}'.charAt(0).toUpperCase() + '${str}'.slice(1)`;
+            }
+            return `Here's how to capitalize a string in JavaScript:\n\nJavaScript:\n'"hello".charAt(0).toUpperCase() + "hello".slice(1)'`;
+        }
+
+        // Find max in array
+        if (lower.includes("max") && lower.includes("array")) {
+            const match = text.match(/max(imum)? (of )?array\s*\[([^\]]+)\]/i);
+            if (match) {
+                const arr = match[3].split(',').map(x => Number(x.trim()));
+                const max = Math.max(...arr);
+                return `Maximum of [${arr.join(', ')}] is ${max}\n\nJavaScript:\nMath.max(${arr.join(', ')})`;
+            }
+        }
+
+        // Find min in array
+        if (lower.includes("min") && lower.includes("array")) {
+            const match = text.match(/min(imum)? (of )?array\s*\[([^\]]+)\]/i);
+            if (match) {
+                const arr = match[3].split(',').map(x => Number(x.trim()));
+                const min = Math.min(...arr);
+                return `Minimum of [${arr.join(', ')}] is ${min}\n\nJavaScript:\nMath.min(${arr.join(', ')})`;
+            }
+        }
+
+        // Remove duplicates from array
+        if (lower.includes("remove duplicates") && lower.includes("array")) {
+            const match = text.match(/remove duplicates (from )?array\s*\[([^\]]+)\]/i);
+            if (match) {
+                const arr = match[2].split(',').map(x => Number(x.trim()));
+                const unique = [...new Set(arr)];
+                return `Array without duplicates: [${unique.join(', ')}]\n\nJavaScript:\n[...new Set([${arr.join(', ')}])]`;
+            }
+        }
+
+        // String length
+        if (lower.includes("length of string")) {
+            const match = text.match(/length of string (["']?)(.+?)\1/i);
+            if (match) {
+                const str = match[2];
+                return `Length of "${str}" is ${str.length}\n\nJavaScript:\n'${str}'.length`;
+            }
+        }
+
+        // Python/JS/code
+        if (lower.includes("python") || lower.includes("javascript") || lower.includes("js") || lower.includes("code")) {
+            return "Could you please provide your code or describe your coding problem?";
+        }
+
+        // General fallback
+        return "Sorry, I couldn't understand your request. Please ask a math or coding question, or try rephrasing!";
+    }
+
+function sendMessage() {
+    const input = document.getElementById('userInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    appendMessage(msg, 'user');
+    input.value = '';
+    setTimeout(() => {
+        // Only use politeReply if the message is a simple greeting/thanks/bye
+        const lower = msg.toLowerCase().trim();
+        const greetings = ["hello", "hi", "hey"];
+        const thanks = ["thank", "thanks", "thx"];
+        if (
+            greetings.includes(lower) ||
+            thanks.includes(lower) ||
+            lower === "bye"
+        ) {
+            let reply = politeReply(msg);
+            appendMessage(reply, 'ai');
+        } else {
+            let reply = tryMathOrCode(msg);
+            if (!reply) reply = "I'm here to help with coding and math! Please provide more details or ask a specific question.";
+            appendMessage(reply, 'ai');
+        }
+    }, 400);
+}
+</script>

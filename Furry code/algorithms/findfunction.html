@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sigma Meat Chewer Will Eat Your Nose Tonight While You Are Sleeping</title>
+</head>
+
+<body>
+    <textarea id="paragraph">The Sigma Meat Chewer Will Eat Your Nose Tonight While You Are Sleeping</textarea>
+    <textarea id="word"></textarea>
+    <button onclick="findAllInstancesInTheParagraph()">Do Stuff</button>
+</body>
+<script>
+    function findAllInstancesInTheParagraph() {
+        const paragraph = document.getElementById("paragraph").value;
+        const word = document.getElementById("word").value;
+        let placesWhereItsFound = [];
+
+        if (word.length == 0) {
+            alert("Please enter a word to search for.");
+            return;
+        }
+
+        let pos = 0;
+        while (pos <= paragraph.length - word.length) {
+            let ifItsTrue = true;
+
+            for (let i = 0; i < word.length; i++) {
+                if (paragraph[pos + i] !== word[i]) {
+                    ifItsTrue = false;
+                    break;
+                }
+            }
+
+            if (ifItsTrue) {
+                placesWhereItsFound.push(pos);
+            }
+
+            pos++;
+        }
+
+        if (placesWhereItsFound.length == 0) {
+            console.log("Never found nuttin idiotic monkey.");
+        } else {
+            console.log("Found sumting here " + placesWhereItsFound.join(", ") + " idiotic monkey." + " Go and eat your nose." + " You are a sigma meat chewer." + " You will eat your nose tonight while you are sleeping." + " You are a sigma meat chewer." + " You Are Not A Sigma Meat Chewer If You Don't Eat Your Nose Tonight While You Are Sleeping, Though." + " You Are Litterally Not Sigma");
+        }
+    }
+
+</script>
+
+</html>

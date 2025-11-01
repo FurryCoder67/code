@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find The 2 Digit Number</title>
+</head>
+
+<body>
+    <script>
+        function findTheTwoDigitNumber() {
+            for (let i = 0; i <= 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    let normal = Number(i*10) + Number(j);
+                    let reversed = Number(j * 10) + Number(i);
+                    if (Number(normal) - 18 == Number(reversed) && (Number(i) + Number(j)) * Number(6) + Number(4) == Number(normal)) {
+                        return normal;
+                    } 
+                }
+            }
+        }
+        function run() {
+            console.log(findTheTwoDigitNumber());
+        }
+        run();
+    </script>
+</body>
+
+</html>

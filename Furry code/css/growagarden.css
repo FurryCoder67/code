@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f0fff0;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.stats p {
+  font-size: 1.2em;
+  margin: 5px;
+}
+
+.buttons button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1em;
+}
+
+.panel {
+  display: none;
+  margin: 20px auto;
+  padding: 15px;
+  border: 2px solid #ccc;
+  background: #fff;
+  width: 300px;
+}
+
+.plot-container {
+  margin: 20px;
+}
+
+.plot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px;
+  border: 10px solid #aaa;
+  background: #e0ffe0;
+  min-height: 500px;
+}
+
+.plant {
+  font-size: 1.5em;
+  width: 30px;
+  height: 30px;
+}

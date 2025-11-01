@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill The Boxes</title>
+</head>
+<body>
+    <script>
+        // (i * j) === 21
+        // (i + k) === 8
+        // (j * l) === 9
+        // (k - l) === 5
+        function fillTheBoxes() {
+            for (let i = 0; i <= 20; i = i + 0.1) {let j = 0;
+                for (let j = 0; j <= 20; j = j+0.1) {
+                    for (let k = 0; k <= 20; k = k + 0.1) {
+                        for (let l = 0; l <= 20; l = l + 0.1) {
+                            if (
+                                (i * j) == 21 &&
+                                (i + k) == 8 &&
+                                (j * l) == 9 &&
+                                (k - l) == 5
+                            ) {
+                                let string = i + " " + j + " " + k + " " + l;
+                                console.log(string);
+                                return string;
+                            }
+                        }
+                    }
+                }
+            }
+            console.log("Nothing Found");
+            return;
+        }
+        fillTheBoxes();
+    </script>
+</body>
+
+</html>
