@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
 <body>
+    <input id="input">
+    <button>Run</button>
     <script>
+        function run() {
+            let input = document.getElementById("input").value;
+
+        }
         function runTestCases() {
             let num = breakPieces(6722);
             console.assert(num[0] == 67, "Break Pieces 1 failed");
@@ -16,9 +16,9 @@
             num = breakPieces(2025);
             console.assert(num[0] == 20, "Break Pieces 2 failed");
             console.assert(num[1] == 25, "Break Pieces 2 failed");
-            //console.assert(findClosestSqrt(20) == 4, "Closest Sqrt 1 failed");
-            console.assert(findClosestSqrt(25) == 5, "Closest Sqrt 2 failed");
-            //console.assert(findClosestSqrt(41) == 6, "Closest Sqrt 3 failed");
+            console.assert(findClosestSqrt(20) == "4", "Closest Sqrt 1 failed");
+            console.assert(findClosestSqrt(25) == "5", "Closest Sqrt 2 failed");
+            console.assert(findClosestSqrt(41) == "6", "Closest Sqrt 3 failed");
         }
         function breakPieces(num) {
             let numStr = String(num);
@@ -27,15 +27,19 @@
             result.push(numStr.slice(2, 4));
             return result;
         }
-        function findClosestSqrt(num) {
+        function findClosestSqrt(str) {
             for (let i = 0; i <= 9; i++) {
-                if ((i * i) > num) {
+                if ((i * i) > Number(str)) {
                     return i - 1;
                 }
             }
         }
         function solveSqrt(num) {
+            let result = "";
             let pieces = breakPieces(num);
+            for (let i = 0; i < array.length; i++) {
+                
+            }
         }
         runTestCases();
     </script>
