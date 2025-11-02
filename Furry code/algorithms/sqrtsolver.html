@@ -35,10 +35,11 @@
             }
         }
         function solveSqrt(num) {
-            let result = "";
-            let pieces = breakPieces(num);
+            let result = "", pieces = breakPieces(num), currentPart = 0, product = 0;
+            result += findClosestSqrt(pieces[currentPart]);
+            product = String(pieces[currentPart] - findClosestSqrt(pieces[currentPart])) + pieces[currentPart + 1];
             for (let i = 0; i < array.length; i++) {
-                
+
             }
         }
         runTestCases();
