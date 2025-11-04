@@ -3,45 +3,140 @@
 
 <body>
     <input id="input">
-    <button>Run</button>
+    <button onclick="run()">Run</button>
     <script>
         function run() {
             let input = document.getElementById("input").value;
+            console.log(calcSqRt(input));
+        }
 
-        }
         function runTestCases() {
-            let num = breakPieces(6722);
+            console.time("Timer");
+            let num = breakPieces("67.2254");
             console.assert(num[0] == 67, "Break Pieces 1 failed");
-            console.assert(num[1] == 22, "Break Pieces 1 failed");
-            num = breakPieces(2025);
-            console.assert(num[0] == 20, "Break Pieces 2 failed");
-            console.assert(num[1] == 25, "Break Pieces 2 failed");
-            console.assert(findClosestSqrt(20) == "4", "Closest Sqrt 1 failed");
-            console.assert(findClosestSqrt(25) == "5", "Closest Sqrt 2 failed");
-            console.assert(findClosestSqrt(41) == "6", "Closest Sqrt 3 failed");
+            console.assert(num[1] == 22, "Break Pieces 2 failed");
+            console.assert(num[2] == 54, "Break Pieces 3 failed");
+            num = breakPieces("2025");
+            console.assert(num[0] == 20, "Break Pieces 4 failed");
+            console.assert(num[1] == 25, "Break Pieces 5 failed");
+            num = breakPieces("2104");
+            console.assert(num[0] == 21, "Break Pieces 6 failed");
+            console.assert(num[1] == 4, "Break Pieces 7 failed");
+            num == 1000
+            console.assert(num[0] == 10, "Break Pieces 8 failed");
+            console.assert(num[1] == "00", "Break Pieces 9 failed");
+            console.assert(findClosestSqrt("20") == "4", "Closest Sqrt 1 failed");
+            console.assert(findClosestSqrt("25") == "5", "Closest Sqrt 2 failed");
+            console.assert(findClosestSqrt("41") == "6", "Closest Sqrt 3 failed");
+            console.assert(findClosestSqrt("83") == "9", "Closest Sqrt 4 failed");
+            console.assert(calcSqRt("2145") == "46", "solveSqrt 1 failed");
+            console.assert(calcSqRt("364789") == "603", "solveSqrt 2 failed");
+            console.assert(calcSqRt("36478") == "190", "solveSqrt 3 failed");
+            console.assert(calcSqRt("304789") == "552", "solveSqrt 4 failed");
+            console.assert(calcSqRt("55etr2.67") == "ERROR", "solveSqrt 5 failed");
+            console.assert(calcSqRt("52.67dkjkf") == "ERROR", "solveSqrt 6 failed");
+            console.timeEnd("Timer");
         }
-        function breakPieces(num) {
-            let numStr = String(num);
+
+        function breakPieces(numStr) {
             let result = [];
-            result.push(numStr.slice(0, 2));
-            result.push(numStr.slice(2, 4));
-            return result;
-        }
-        function findClosestSqrt(str) {
-            for (let i = 0; i <= 9; i++) {
-                if ((i * i) > Number(str)) {
-                    return i - 1;
+            let parts = [];
+            let current = "";
+
+            for (let i = 0; i < numStr.length; i++) {
+                if (numStr[i] === ".") {
+                    parts.push(current);
+                    current = "";
+                } else {
+                    current += numStr[i];
                 }
             }
-        }
-        function solveSqrt(num) {
-            let result = "", pieces = breakPieces(num), currentPart = 0, product = 0;
-            result += findClosestSqrt(pieces[currentPart]);
-            product = String(pieces[currentPart] - findClosestSqrt(pieces[currentPart])) + pieces[currentPart + 1];
-            for (let i = 0; i < array.length; i++) {
+            parts.push(current);
+            if (parts.length === 1) parts.push("");
 
+            let wholenum = parts[0];
+            let decimal = parts[1];
+
+            if (wholenum.length % 2 !== 0) {
+                result.push(Number(wholenum[0]));
+                wholenum = wholenum.slice(1);
             }
+
+            for (let i = 0; i < wholenum.length; i += 2) {
+                result.push(Number(wholenum.slice(i, i + 2)));
+            }
+
+            if (decimal.length > 0) {
+                while (decimal.length % 2 !== 0) decimal += "0";
+                for (let i = 0; i < decimal.length; i += 2) {
+                    result.push(Number(decimal.slice(i, i + 2)));
+                }
+            }
+
+            return result;
         }
+
+        function findClosestSqrt(str) {
+            for (let i = 0; i <= 10; i++) {
+                if ((i * i) > Number(str)) return String(i - 1);
+            }
+            return "9";
+        }
+
+        function findNextNumber(doubledRoot, remainder) {
+            for (let i = 9; i >= 0; i--) {
+                let trial = (doubledRoot * 10 + i) * i;
+                if (trial <= remainder) return i;
+            }
+            return 0;
+        }
+
+        function isNumberorDot(str) {
+            if (str.length == 0) return false;
+            let dotCount = 0;
+            for (let i = 0; i < str.length; i++) {
+                let char = str[i];
+                if (char == ".") {
+                    dotCount++;
+                    if (dotCount > 1) return false;
+                } else if (char < "0" || char > "9") {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function calcSqRt(numStr) {
+            numStr = String(numStr);
+            if (!isNumberorDot(numStr)) {
+                return "ERROR";
+            }
+            let pieces = breakPieces(numStr);
+            let decimalIndex = numStr.includes(".") ? numStr.split(".")[1].length / 2 : 0;
+            let root = Number(findClosestSqrt(pieces[0]));
+            let remainder = pieces[0] - root * root;
+            let resultDigits = [root];
+            let rootString = "";
+
+            for (let i = 1; i < pieces.length; i++) {
+                remainder = Number(String(remainder) + String(pieces[i]));
+                let doubledRoot = root * 2;
+                let nextDigit = findNextNumber(doubledRoot, remainder);
+                let subtracted = (doubledRoot * 10 + nextDigit) * nextDigit;
+                remainder = remainder - subtracted;
+                root = root * 10 + nextDigit;
+                resultDigits.push(nextDigit);
+            }
+
+            rootString = resultDigits.join("");
+            if (decimalIndex > 0) {
+                let pos = resultDigits.length - decimalIndex;
+                rootString = rootString.slice(0, pos) + "." + rootString.slice(pos);
+            }
+
+            return rootString;
+        }
+
         runTestCases();
     </script>
 </body>
