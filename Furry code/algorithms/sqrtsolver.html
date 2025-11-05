@@ -2,8 +2,9 @@
 <html lang="en">
 
 <body>
-    <input id="input">
+    <input id="input" placeholder="Enter number">
     <button onclick="run()">Run</button>
+
     <script>
         function run() {
             let input = document.getElementById("input").value;
@@ -16,15 +17,18 @@
             console.assert(num[0] == 67, "Break Pieces 1 failed");
             console.assert(num[1] == 22, "Break Pieces 2 failed");
             console.assert(num[2] == 54, "Break Pieces 3 failed");
+
             num = breakPieces("2025");
             console.assert(num[0] == 20, "Break Pieces 4 failed");
             console.assert(num[1] == 25, "Break Pieces 5 failed");
+
             num = breakPieces("2104");
             console.assert(num[0] == 21, "Break Pieces 6 failed");
             console.assert(num[1] == 4, "Break Pieces 7 failed");
-            num == 1000
+
+            num = breakPieces("1000");
             console.assert(num[0] == 10, "Break Pieces 8 failed");
-            console.assert(num[1] == "00", "Break Pieces 9 failed");
+            console.assert(num[1] == 0, "Break Pieces 9 failed");
             console.assert(findClosestSqrt("20") == "4", "Closest Sqrt 1 failed");
             console.assert(findClosestSqrt("25") == "5", "Closest Sqrt 2 failed");
             console.assert(findClosestSqrt("41") == "6", "Closest Sqrt 3 failed");
@@ -56,6 +60,7 @@
 
             let wholenum = parts[0];
             let decimal = parts[1];
+            if (wholenum === "") wholenum = "0";
 
             if (wholenum.length % 2 !== 0) {
                 result.push(Number(wholenum[0]));
@@ -63,11 +68,15 @@
             }
 
             for (let i = 0; i < wholenum.length; i += 2) {
-                result.push(Number(wholenum.slice(i, i + 2)));
+                if (wholenum.slice(i, i + 2)) {
+                    result.push(Number(wholenum.slice(i, i + 2)));
+                }
             }
 
             if (decimal.length > 0) {
-                while (decimal.length % 2 !== 0) decimal += "0";
+                while (decimal.length % 2 !== 0) {
+                    decimal += "0";
+                }
                 for (let i = 0; i < decimal.length; i += 2) {
                     result.push(Number(decimal.slice(i, i + 2)));
                 }
@@ -78,7 +87,7 @@
 
         function findClosestSqrt(str) {
             for (let i = 0; i <= 10; i++) {
-                if ((i * i) > Number(str)) return String(i - 1);
+                if (i * i > Number(str)) return String(i - 1);
             }
             return "9";
         }
@@ -111,8 +120,9 @@
             if (!isNumberorDot(numStr)) {
                 return "ERROR";
             }
+
             let pieces = breakPieces(numStr);
-            let decimalIndex = numStr.includes(".") ? numStr.split(".")[1].length / 2 : 0;
+            let hasDecimal = numStr.includes(".");
             let root = Number(findClosestSqrt(pieces[0]));
             let remainder = pieces[0] - root * root;
             let resultDigits = [root];
@@ -129,9 +139,9 @@
             }
 
             rootString = resultDigits.join("");
-            if (decimalIndex > 0) {
-                let pos = resultDigits.length - decimalIndex;
-                rootString = rootString.slice(0, pos) + "." + rootString.slice(pos);
+
+            if (hasDecimal) {
+                rootString = rootString.slice(0, Math.ceil(rootString.length / 2)) + "." + rootString.slice(Math.ceil(rootString.length / 2));
             }
 
             return rootString;
