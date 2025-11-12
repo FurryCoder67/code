@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loops practice</title>
+    <style>
+        #numberDisplay {
+            font-size: 20em;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        function doLoop() {
+            let number = 2;
+            while (number < 200) {
+                number = number + 1;
+            }
+            document.getElementById("numberDisplay").innerHTML = number;
+        }
+    </script>
+    <div id="numberDisplay">0000</div>
+    <button onclick="doLoop()">Do the thing</button>
+</body>
+
+</html>

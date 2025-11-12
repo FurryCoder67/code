@@ -2,43 +2,30 @@
 <html lang="en">
 
 <body>
-    <input id="input" placeholder="Enter number">
+    <input id="input" placeholder="Enter number, Monkey🦧⁶⁷⇝">
     <button onclick="run()">Run</button>
 
     <script>
         function run() {
             let input = document.getElementById("input").value;
-            console.log(calcSqRt(input));
+            alert("Spaghetti Toiletti says " + calcSqRt(input));
         }
 
         function runTestCases() {
             console.time("Timer");
-            let num = breakPieces("67.2254");
-            console.assert(num[0] == 67, "Break Pieces 1 failed");
-            console.assert(num[1] == 22, "Break Pieces 2 failed");
-            console.assert(num[2] == 54, "Break Pieces 3 failed");
-
-            num = breakPieces("2025");
-            console.assert(num[0] == 20, "Break Pieces 4 failed");
-            console.assert(num[1] == 25, "Break Pieces 5 failed");
-
-            num = breakPieces("2104");
-            console.assert(num[0] == 21, "Break Pieces 6 failed");
-            console.assert(num[1] == 4, "Break Pieces 7 failed");
-
-            num = breakPieces("1000");
-            console.assert(num[0] == 10, "Break Pieces 8 failed");
-            console.assert(num[1] == 0, "Break Pieces 9 failed");
-            console.assert(findClosestSqrt("20") == "4", "Closest Sqrt 1 failed");
-            console.assert(findClosestSqrt("25") == "5", "Closest Sqrt 2 failed");
-            console.assert(findClosestSqrt("41") == "6", "Closest Sqrt 3 failed");
-            console.assert(findClosestSqrt("83") == "9", "Closest Sqrt 4 failed");
-            console.assert(calcSqRt("2145") == "46", "solveSqrt 1 failed");
-            console.assert(calcSqRt("364789") == "603", "solveSqrt 2 failed");
-            console.assert(calcSqRt("36478") == "190", "solveSqrt 3 failed");
-            console.assert(calcSqRt("304789") == "552", "solveSqrt 4 failed");
-            console.assert(calcSqRt("55etr2.67") == "ERROR", "solveSqrt 5 failed");
-            console.assert(calcSqRt("52.67dkjkf") == "ERROR", "solveSqrt 6 failed");
+            console.assert(findNextNumber(8, 52), "Test case failed")
+            /* console.assert((calcSqRt("1600") == "40"), "test case 1 failed");
+            console.assert((calcSqRt("1764") == "42"), "test case 2 failed");
+            console.assert((calcSqRt("2025") == "45"), "test case 3 failed"); 
+           console.assert((calcSqRt("2102") == "45"), "test case 4 failed");
+             console.assert((calcSqRt("9003") == "94"), "test case 5 failed");
+            console.assert((calcSqRt("o123") == "ERROR"), "test case 6 failed");
+            console.assert((calcSqRt("0123") == "11"), "test case 7 failed");
+            console.assert((calcSqRt("0010") == "3"), "test case 8 failed");
+            console.assert((calcSqRt("1.0000") == "1"), "test case 9 failed");
+            console.assert((calcSqRt("13.0098") == "3.60"), "test case 10 failed");
+            console.assert((calcSqRt("2332.82") == "48.2"), "test case 11 failed");
+            console.assert((calcSqRt("-1001.22") == "31.6i"), "test case 12 failed"); */
             console.timeEnd("Timer");
         }
 
@@ -56,11 +43,11 @@
                 }
             }
             parts.push(current);
-            if (parts.length === 1) parts.push("");
+            if (parts.length == 1) parts.push("");
 
             let wholenum = parts[0];
             let decimal = parts[1];
-            if (wholenum === "") wholenum = "0";
+            if (wholenum == "") wholenum = "0";
 
             if (wholenum.length % 2 !== 0) {
                 result.push(Number(wholenum[0]));
@@ -93,9 +80,12 @@
         }
 
         function findNextNumber(doubledRoot, remainder) {
-            for (let i = 9; i >= 0; i--) {
+            for (let i = 0; i < 9; i++) {
                 let trial = (doubledRoot * 10 + i) * i;
-                if (trial <= remainder) return i;
+                if (trial <= remainder) {
+                    console.log(i);
+                    return i;
+                }
             }
             return 0;
         }
@@ -109,7 +99,7 @@
                     dotCount++;
                     if (dotCount > 1) return false;
                 } else if (char < "0" || char > "9") {
-                    return false;
+                    if (char != "-") return false;
                 }
             }
             return true;
@@ -121,28 +111,45 @@
                 return "ERROR";
             }
 
+            let isNegative = false;
+            if (numStr[0] == "-") {
+                isNegative = true;
+                numStr = numStr.slice(1);
+            }
+
             let pieces = breakPieces(numStr);
             let hasDecimal = numStr.includes(".");
             let root = Number(findClosestSqrt(pieces[0]));
-            let remainder = pieces[0] - root * root;
+            let remainder = pieces[0] - (root * root);
             let resultDigits = [root];
             let rootString = "";
+            let decIndex = numStr.indexOf(".");
 
             for (let i = 1; i < pieces.length; i++) {
                 remainder = Number(String(remainder) + String(pieces[i]));
                 let doubledRoot = root * 2;
-                let nextDigit = findNextNumber(doubledRoot, remainder);
-                let subtracted = (doubledRoot * 10 + nextDigit) * nextDigit;
-                remainder = remainder - subtracted;
-                root = root * 10 + nextDigit;
+                let nextDigit = String(findNextNumber(doubledRoot, remainder));
+                let subtracted = ((doubledRoot * 10) + nextDigit) * nextDigit;
+                remainder = remainder - (nextDigit * nextDigit);
+                if (String(nextDigit).length == 1) {
+                    nextDigit = "0" + nextDigit;
+                    alert(nextDigit);
+                }
+                root = String(root) + nextDigit;
                 resultDigits.push(nextDigit);
             }
 
             rootString = resultDigits.join("");
 
             if (hasDecimal) {
-                rootString = rootString.slice(0, Math.ceil(rootString.length / 2)) + "." + rootString.slice(Math.ceil(rootString.length / 2));
+                rootString = rootString.slice(0, decIndex) + "." + rootString.slice(decIndex);
             }
+
+            if (rootString[rootString.length - 1] == ".") {
+                rootString = rootString.slice(0, rootString.length - 1);
+            }
+
+            if (isNegative) rootString += "i";
 
             return rootString;
         }

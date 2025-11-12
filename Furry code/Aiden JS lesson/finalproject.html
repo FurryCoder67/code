@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catching Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            position: relative;
+            background: #1a1a2e;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+        }
+
+        #gameCanvas {
+            display: block;
+            background: #0f0f1e;
+            border: 3px solid #667eea;
+            border-radius: 5px;
+        }
+
+        #scoreDisplay {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        #missesDisplay {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: #ff6b6b;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        #gameOverScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 26, 46, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 20;
+            display: none;
+            border: 3px solid #667eea;
+        }
+
+        #gameOverScreen h2 {
+            color: #ff6b6b;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        #gameOverScreen p {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        #restartButton {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #restartButton:hover {
+            background: #5568d3;
+        }
+
+        #startScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 26, 46, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 20;
+            border: 3px solid #667eea;
+        }
+
+        #startScreen h1 {
+            color: #667eea;
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        #startScreen p {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        #startButton {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #startButton:hover {
+            background: #5568d3;
+        }
+
+        #playerNameInput {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #667eea;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            width: 250px;
+            margin-bottom: 20px;
+            outline: none;
+            text-align: center;
+        }
+
+        #playerNameInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #playerNameInput:focus {
+            border-color: #5568d3;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        #playerNameDisplay {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        #showPlayerButton {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 20px;
+        }
+
+        #showPlayerButton:hover {
+            background: #3db8b0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="playerNameDisplay" style="display: none;"></div>
+        <div id="scoreDisplay">Score: 0</div>
+        <div id="missesDisplay">Misses: 0 / 5</div>
+
+        <div id="startScreen">
+            <h1>🎯 Catching Game</h1>
+            <p>Use LEFT and RIGHT arrow keys to move the catcher</p>
+            <p>Catch falling objects to score points!</p>
+            <p>You can miss 5 objects before game over</p>
+            <input type="text" id="player" placeholder="Enter your name" maxlength="20">
+            <br>
+            <button id="showPlayerButton" onclick="showPlayer()">Show player name</button>
+            <br>
+            <button id="startButton">Start game</button>
+        </div>
+
+        <div id="gameOverScreen">
+            <h2>Game Over!</h2>
+            <p id="playerNameResult"></p>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button id="restartButton">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const missesDisplay = document.getElementById('missesDisplay');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreSpan = document.getElementById('finalScore');
+        const playerNameDisplay = document.getElementById('playerNameDisplay');
+        const playerNameInput = document.getElementById('player');
+        const playerNameResult = document.getElementById('playerNameResult');
+
+        // Player name
+        let playerName = '';
+
+        // Game state
+        let gameState = 'start'; // 'start', 'playing', 'gameOver'
+        let score = 0;
+        let misses = 0;
+        const maxMisses = 5;
+
+        // Catcher
+        const catcher = {
+            x: canvas.width / 2,
+            y: canvas.height - 40,
+            width: 80,
+            height: 20,
+            speed: 5,
+            color: '#667eea'
+        };
+
+        // Falling objects
+        let fallingObjects = [];
+        const objectColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181'];
+        let lastSpawnTime = 0;
+        const spawnInterval = 1000; // Spawn every 1 second
+
+        // Keyboard input
+        const keys = {
+            left: false,
+            right: false
+        };
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') keys.left = true;
+            if (e.key === 'ArrowRight') keys.right = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft') keys.left = false;
+            if (e.key === 'ArrowRight') keys.right = false;
+        });
+
+        // Original showPlayer function preserved
+        function showPlayer() {
+            const player = document.getElementById("player").value;
+            if (player.trim()) {
+                alert("Player name is: " + player);
+            } else {
+                alert("Please enter a player name!");
+            }
+        }
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+        document.getElementById('restartButton').addEventListener('click', startGame);
+
+        function startGame() {
+            // Get player name
+            playerName = playerNameInput.value.trim() || 'Player';
+
+            gameState = 'playing';
+            score = 0;
+            misses = 0;
+            fallingObjects = [];
+            catcher.x = canvas.width / 2;
+            lastSpawnTime = Date.now();
+            startScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            playerNameDisplay.style.display = 'block';
+            playerNameDisplay.textContent = `Player: ${playerName}`;
+            updateScore();
+            gameLoop();
+        }
+
+        function spawnObject() {
+            const now = Date.now();
+            if (now - lastSpawnTime > spawnInterval) {
+                fallingObjects.push({
+                    x: Math.random() * (canvas.width - 30) + 15,
+                    y: -30,
+                    radius: 15,
+                    speed: 2 + Math.random() * 3,
+                    color: objectColors[Math.floor(Math.random() * objectColors.length)]
+                });
+                lastSpawnTime = now;
+            }
+        }
+
+        function updateCatcher() {
+            if (keys.left && catcher.x > catcher.width / 2) {
+                catcher.x -= catcher.speed;
+            }
+            if (keys.right && catcher.x < canvas.width - catcher.width / 2) {
+                catcher.x += catcher.speed;
+            }
+        }
+
+        function updateObjects() {
+            for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                const obj = fallingObjects[i];
+                obj.y += obj.speed;
+
+                // Check collision with catcher
+                const distanceX = Math.abs(obj.x - catcher.x);
+                const distanceY = Math.abs(obj.y - catcher.y);
+
+                if (distanceX < (catcher.width / 2 + obj.radius) &&
+                    distanceY < (catcher.height / 2 + obj.radius)) {
+                    // Caught!
+                    fallingObjects.splice(i, 1);
+                    score += 10;
+                    updateScore();
+                    continue;
+                }
+
+                // Check if object fell off screen
+                if (obj.y > canvas.height + obj.radius) {
+                    fallingObjects.splice(i, 1);
+                    misses++;
+                    updateScore();
+
+                    if (misses >= maxMisses) {
+                        gameOver();
+                    }
+                }
+            }
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `Score: ${score}`;
+            missesDisplay.textContent = `Misses: ${misses} / ${maxMisses}`;
+        }
+
+        function gameOver() {
+            gameState = 'gameOver';
+            finalScoreSpan.textContent = score;
+            playerNameResult.textContent = `Great job, ${playerName}!`;
+            gameOverScreen.style.display = 'block';
+            playerNameDisplay.style.display = 'none';
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = '#0f0f1e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw catcher
+            ctx.fillStyle = catcher.color;
+            ctx.beginPath();
+            ctx.roundRect(
+                catcher.x - catcher.width / 2,
+                catcher.y - catcher.height / 2,
+                catcher.width,
+                catcher.height,
+                5
+            );
+            ctx.fill();
+
+            // Draw falling objects
+            fallingObjects.forEach(obj => {
+                ctx.fillStyle = obj.color;
+                ctx.beginPath();
+                ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Add a subtle glow
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = obj.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            // Draw catcher indicator lines
+            ctx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(catcher.x, catcher.y - catcher.height / 2);
+            ctx.lineTo(catcher.x, 0);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function gameLoop() {
+            if (gameState !== 'playing') return;
+
+            spawnObject();
+            updateCatcher();
+            updateObjects();
+            draw();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initialize canvas with rounded rectangle support
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+    </script>
+</body>
+
+</html>
