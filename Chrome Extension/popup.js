@@ -16,7 +16,7 @@ const player = {
     dy: 0,
     speed: 3,
     gravity: 0.5,
-    jumpForce: -10,
+    jumpForce: -12,  // stronger jump
     grounded: false,
     alive: true
 };
@@ -33,7 +33,9 @@ let checkpoints = [
     { x: 250, y: 220 },
     { x: 500, y: 180 },
     { x: 750, y: 140 },
-    { x: 1000, y: 100 }
+    { x: 1000, y: 100 },
+    { x: 1300, y: 80 },
+    { x: 1600, y: 60 }
 ];
 let lastCheckpoint = { x: 50, y: 250 };
 
@@ -47,16 +49,21 @@ const platforms = [
     { x: 550, y: 110, width: 80, height: 10, color: "green", dx: 1, minX: 550, maxX: 620 },
     { x: 650, y: 80, width: 100, height: 10, color: "green", dx: -1, minX: 650, maxX: 720 },
     { x: 750, y: 120, width: 120, height: 10, color: "green", dx: 0 },
-    { x: 900, y: 90, width: 150, height: 10, color: "green", dx: 1, minX: 900, maxX: 1050 }
+    { x: 900, y: 90, width: 150, height: 10, color: "green", dx: 1, minX: 900, maxX: 1050 },
+    { x: 1050, y: 60, width: 200, height: 10, color: "green", dx: -0.5, minX: 1050, maxX: 1250 },
+    { x: 1300, y: 40, width: 150, height: 10, color: "green", dx: 0 },
+    { x: 1500, y: 70, width: 120, height: 10, color: "green", dx: 1, minX: 1500, maxX: 1620 }
 ];
 
-// Hazards (spikes/pits, some moving)
+// Hazards (spikes/pits, moving)
 const hazards = [
     { x: 180, y: 280, width: 20, height: 20, color: "black", dx: 0 },
     { x: 350, y: 280, width: 20, height: 20, color: "black", dx: 0 },
     { x: 500, y: 280, width: 20, height: 20, color: "black", dx: 0.5, minX: 500, maxX: 550 },
     { x: 600, y: 280, width: 20, height: 20, color: "black", dx: -0.5, minX: 580, maxX: 620 },
-    { x: 800, y: 280, width: 20, height: 20, color: "black", dx: 0 }
+    { x: 800, y: 280, width: 20, height: 20, color: "black", dx: 0 },
+    { x: 1000, y: 280, width: 20, height: 20, color: "black", dx: 1, minX: 1000, maxX: 1050 },
+    { x: 1200, y: 280, width: 20, height: 20, color: "black", dx: -1, minX: 1180, maxX: 1250 }
 ];
 
 // Coins
@@ -65,11 +72,13 @@ const coins = [
     { x: 240, y: 170, width: 10, height: 10, collected: false },
     { x: 370, y: 140, width: 10, height: 10, collected: false },
     { x: 520, y: 90, width: 10, height: 10, collected: false },
-    { x: 950, y: 60, width: 10, height: 10, collected: false }
+    { x: 950, y: 60, width: 10, height: 10, collected: false },
+    { x: 1120, y: 30, width: 10, height: 10, collected: false },
+    { x: 1550, y: 50, width: 10, height: 10, collected: false }
 ];
 
 // Goal
-const goal = { x: 1100, y: 50, width: 20, height: 20, color: "gold" };
+const goal = { x: 1650, y: 20, width: 20, height: 20, color: "gold" };
 
 // Controls
 const keys = {};
@@ -101,9 +110,7 @@ function update() {
     platforms.forEach(platform => {
         if (platform.dx) {
             platform.x += platform.dx;
-            if (platform.x < platform.minX || platform.x + platform.width > platform.maxX) {
-                platform.dx *= -1;
-            }
+            if (platform.x < platform.minX || platform.x + platform.width > platform.maxX) platform.dx *= -1;
         }
         if (player.x < platform.x + platform.width &&
             player.x + player.width > platform.x &&
@@ -147,7 +154,7 @@ function update() {
         if (player.x > cp.x) lastCheckpoint = { x: cp.x, y: cp.y };
     });
 
-    // Prevent falling off canvas
+    // Prevent falling
     if (player.y + player.height > canvas.height) respawnCheckpoint();
 
     // Check goal
@@ -193,24 +200,24 @@ function resetGame() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw score
+    // Score
     ctx.fillStyle = "black";
     ctx.font = "16px Arial";
     ctx.fillText(`Score: ${score}`, 10, 20);
 
-    // Draw platforms
+    // Platforms
     platforms.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x - cameraX, p.y, p.width, p.height);
     });
 
-    // Draw hazards
+    // Hazards
     hazards.forEach(h => {
         ctx.fillStyle = h.color;
         ctx.fillRect(h.x - cameraX, h.y, h.width, h.height);
     });
 
-    // Draw coins
+    // Coins
     coins.forEach(c => {
         if (!c.collected) {
             ctx.fillStyle = "yellow";
@@ -218,11 +225,11 @@ function draw() {
         }
     });
 
-    // Draw goal
+    // Goal
     ctx.fillStyle = goal.color;
     ctx.fillRect(goal.x - cameraX, goal.y, goal.width, goal.height);
 
-    // Draw player (centered)
+    // Player (centered)
     ctx.fillStyle = player.color;
     ctx.fillRect(canvas.width / 2 - player.width / 2, player.y, player.width, player.height);
 }
