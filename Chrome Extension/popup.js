@@ -17,26 +17,39 @@ const player = {
     alive: true
 };
 
+// Score
+let score = 0;
+
+// Checkpoints
+let checkpoints = [
+    { x: 50, y: 250 },
+    { x: 180, y: 220 },
+    { x: 350, y: 180 },
+    { x: 500, y: 150 }
+];
+let lastCheckpoint = { x: 50, y: 250 };
+
 // Platforms (some moving)
 const platforms = [
     { x: 0, y: 280, width: 400, height: 20, color: "green", dx: 0 },
     { x: 100, y: 230, width: 80, height: 10, color: "green", dx: 1, minX: 100, maxX: 200 },
     { x: 220, y: 200, width: 100, height: 10, color: "green", dx: 1.5, minX: 220, maxX: 300 },
-    { x: 50, y: 150, width: 120, height: 10, color: "green", dx: 0 },
-    { x: 250, y: 120, width: 100, height: 10, color: "green", dx: -1, minX: 200, maxX: 300 }
+    { x: 350, y: 170, width: 120, height: 10, color: "green", dx: -1, minX: 300, maxX: 400 },
+    { x: 450, y: 140, width: 100, height: 10, color: "green", dx: 0 },
+    { x: 550, y: 110, width: 80, height: 10, color: "green", dx: 1, minX: 550, maxX: 620 },
+    { x: 650, y: 80, width: 100, height: 10, color: "green", dx: -1, minX: 650, maxX: 720 }
 ];
 
-// Hazards (spikes)
+// Hazards (spikes/pits)
 const hazards = [
     { x: 180, y: 280, width: 20, height: 20, color: "black" },
-    { x: 350, y: 280, width: 20, height: 20, color: "black" }
+    { x: 350, y: 280, width: 20, height: 20, color: "black" },
+    { x: 500, y: 280, width: 20, height: 20, color: "black" },
+    { x: 600, y: 280, width: 20, height: 20, color: "black" }
 ];
 
 // Goal
-const goal = { x: 360, y: 80, width: 20, height: 20, color: "gold" };
-
-// Score
-let score = 0;
+const goal = { x: 700, y: 50, width: 20, height: 20, color: "gold" };
 
 // Controls
 const keys = {};
@@ -64,13 +77,13 @@ function update() {
     player.y += player.dy;
     player.grounded = false;
 
-    // Platform collision
+    // Platform collision and moving platforms
     platforms.forEach(platform => {
-        // Move platform if it has dx
+        // Move platform
         if (platform.dx) {
             platform.x += platform.dx;
             if (platform.x < platform.minX || platform.x + platform.width > platform.maxX) {
-                platform.dx *= -1; // bounce back
+                platform.dx *= -1;
             }
         }
 
@@ -82,7 +95,7 @@ function update() {
             player.y = platform.y - player.height;
             player.dy = 0;
             player.grounded = true;
-            score += 1; // increment score when standing on a platform
+            score += 1; // gain score while on platforms
         }
     });
 
@@ -92,9 +105,14 @@ function update() {
             player.x + player.width > h.x &&
             player.y < h.y + h.height &&
             player.y + player.height > h.y) {
-            player.alive = false;
-            alert("You hit a hazard! Game Over.");
-            resetGame();
+            respawnCheckpoint();
+        }
+    });
+
+    // Update checkpoint if passed
+    checkpoints.forEach(cp => {
+        if (player.x > cp.x) {
+            lastCheckpoint = { x: cp.x, y: cp.y };
         }
     });
 
@@ -102,9 +120,7 @@ function update() {
     if (player.x < 0) player.x = 0;
     if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
     if (player.y + player.height > canvas.height) {
-        player.y = canvas.height - player.height;
-        player.dy = 0;
-        player.grounded = true;
+        respawnCheckpoint();
     }
 
     // Check goal
@@ -120,14 +136,25 @@ function update() {
     requestAnimationFrame(update);
 }
 
+// Respawn at last checkpoint
+function respawnCheckpoint() {
+    player.x = lastCheckpoint.x;
+    player.y = lastCheckpoint.y;
+    player.dx = 0;
+    player.dy = 0;
+    player.grounded = false;
+}
+
 // Reset game
 function resetGame() {
     player.x = 50;
     player.y = 250;
     player.dx = 0;
     player.dy = 0;
+    player.grounded = false;
     player.alive = true;
     score = 0;
+    lastCheckpoint = { x: 50, y: 250 };
 }
 
 // Draw everything
