@@ -16,21 +16,40 @@ const player = {
     grounded: false
 };
 
-// Platforms
-const platforms = [
-    { x: 0, y: 280, width: 400, height: 20, color: "green" },
-    { x: 100, y: 220, width: 100, height: 10, color: "green" },
-    { x: 250, y: 180, width: 80, height: 10, color: "green" },
+// Levels
+const levels = [
+    {
+        platforms: [
+            { x: 0, y: 280, width: 400, height: 20, color: "green" },
+            { x: 100, y: 220, width: 100, height: 10, color: "green" },
+            { x: 250, y: 180, width: 80, height: 10, color: "green" },
+        ],
+        goal: { x: 320, y: 150, width: 20, height: 20, color: "gold" }
+    },
+    {
+        platforms: [
+            { x: 0, y: 280, width: 400, height: 20, color: "green" },
+            { x: 50, y: 240, width: 60, height: 10, color: "green" },
+            { x: 150, y: 200, width: 80, height: 10, color: "green" },
+            { x: 270, y: 160, width: 100, height: 10, color: "green" },
+        ],
+        goal: { x: 350, y: 120, width: 20, height: 20, color: "gold" }
+    },
+    {
+        platforms: [
+            { x: 0, y: 280, width: 400, height: 20, color: "green" },
+            { x: 60, y: 240, width: 50, height: 10, color: "green" },
+            { x: 130, y: 200, width: 60, height: 10, color: "green" },
+            { x: 200, y: 160, width: 70, height: 10, color: "green" },
+            { x: 280, y: 120, width: 90, height: 10, color: "green" },
+        ],
+        goal: { x: 360, y: 90, width: 20, height: 20, color: "gold" }
+    }
 ];
 
-// Goal
-const goal = {
-    x: 320,
-    y: 150,
-    width: 20,
-    height: 20,
-    color: "gold"
-};
+let currentLevel = 0;
+let platforms = levels[currentLevel].platforms;
+let goal = levels[currentLevel].goal;
 
 // Controls
 const keys = {};
@@ -82,8 +101,7 @@ function update() {
         player.x + player.width > goal.x &&
         player.y < goal.y + goal.height &&
         player.y + player.height > goal.y) {
-        alert("You win!");
-        resetGame();
+        nextLevel();
         return;
     }
 
@@ -91,14 +109,30 @@ function update() {
     requestAnimationFrame(update);
 }
 
-function resetGame() {
+function nextLevel() {
+    currentLevel++;
+    if (currentLevel >= levels.length) {
+        alert("Congratulations! You finished all levels!");
+        currentLevel = 0;
+    } else {
+        alert(`Level ${currentLevel + 1}!`);
+    }
+    loadLevel(currentLevel);
+}
+
+function loadLevel(levelIndex) {
+    platforms = levels[levelIndex].platforms;
+    goal = levels[levelIndex].goal;
+    resetPlayer();
+}
+
+function resetPlayer() {
     player.x = 50;
     player.y = 250;
     player.dx = 0;
     player.dy = 0;
 }
 
-// Draw everything
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
