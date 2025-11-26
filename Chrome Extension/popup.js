@@ -1,7 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Player
+// Player setup
 const player = {
     x: 50,
     y: 250,
@@ -16,7 +16,7 @@ const player = {
     grounded: false
 };
 
-// Levels
+// Define levels
 const levels = [
     {
         platforms: [
@@ -56,6 +56,7 @@ const keys = {};
 document.addEventListener("keydown", e => keys[e.code] = true);
 document.addEventListener("keyup", e => keys[e.code] = false);
 
+// Game loop
 function update() {
     // Horizontal movement
     if (keys["ArrowLeft"]) player.dx = -player.speed;
@@ -72,10 +73,9 @@ function update() {
     player.dy += player.gravity;
     player.x += player.dx;
     player.y += player.dy;
-
     player.grounded = false;
 
-    // Collision with platforms
+    // Platform collision
     platforms.forEach(platform => {
         if (player.x < platform.x + platform.width &&
             player.x + player.width > platform.x &&
@@ -102,30 +102,34 @@ function update() {
         player.y < goal.y + goal.height &&
         player.y + player.height > goal.y) {
         nextLevel();
-        return;
+        return; // Prevent double updates
     }
 
     draw();
     requestAnimationFrame(update);
 }
 
+// Move to next level
 function nextLevel() {
     currentLevel++;
     if (currentLevel >= levels.length) {
-        alert("Congratulations! You finished all levels!");
         currentLevel = 0;
+        loadLevel(currentLevel);
+        alert("Congratulations! You finished all levels!");
     } else {
+        loadLevel(currentLevel);
         alert(`Level ${currentLevel + 1}!`);
     }
-    loadLevel(currentLevel);
 }
 
+// Load a level
 function loadLevel(levelIndex) {
     platforms = levels[levelIndex].platforms;
     goal = levels[levelIndex].goal;
     resetPlayer();
 }
 
+// Reset player position
 function resetPlayer() {
     player.x = 50;
     player.y = 250;
@@ -133,8 +137,14 @@ function resetPlayer() {
     player.dy = 0;
 }
 
+// Draw everything
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw level text
+    ctx.fillStyle = "black";
+    ctx.font = "16px Arial";
+    ctx.fillText(`Level: ${currentLevel + 1}`, 10, 20);
 
     // Draw platforms
     platforms.forEach(p => {
@@ -151,5 +161,5 @@ function draw() {
     ctx.fillRect(player.x, player.y, player.width, player.height);
 }
 
-// Start game
+// Start the game
 update();
