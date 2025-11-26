@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Long Multiplication</title>
+</head>
+
+<body>
+    <script>
+        function addArrays(arr1, arr2) {
+            let num1 = arr1.join(''), num2 = arr2.join('');
+            return Number(num1) + Number(num2);
+        }
+        function longMultiply(num1, num2) {
+            if (num1 == '0' || num2 == '0') {
+                return '0';
+            }
+            const Num1 = String(num1);
+            const Num2 = String(num2)
+            const num2Length = Num2.length;
+            let part1 = [];
+            let part2 = [];
+            for (let i = num2Length - 1; i >= 0; i--) {
+                if (i == 1) {
+                    part2 = multipyPart(Num1, Num2[i]);
+                    console.log(part2.join(''));
+                } else if (i == 0) {
+                    part1 = multipyPart(Num1, Num2[i]);
+                    part1.push("0");
+                    console.log(part1.join(''));
+                }
+            }
+            let result = addArrays(part1, part2);
+            return result;
+        }
+        function multipyPart(Num1, Num2Digit) {
+            let carry = 0;
+            let part = [];
+            let num1Length = String(Num1).length;
+            for (let j = num1Length - 1; j >= 0; j--) {
+                let product = Number(Num2Digit) * Number(Num1[j]);
+                let finalproduct = String(product + carry);
+                if (String(finalproduct).length > 1) {
+                    part.unshift(finalproduct[finalproduct.length - 1]);
+                    carry = finalproduct[0];
+                } else {
+                    part.unshift(finalproduct);
+                }
+            }
+            part.unshift(carry);
+            return part;
+
+        }
+        console.log(longMultiply(67, 41));
+    </script>
+</body>
+
+</html>
