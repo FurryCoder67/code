@@ -13,43 +13,30 @@ const player = {
     speed: 3,
     gravity: 0.5,
     jumpForce: -10,
-    grounded: false
+    grounded: false,
+    alive: true
 };
 
-// Define levels
-const levels = [
-    {
-        platforms: [
-            { x: 0, y: 280, width: 400, height: 20, color: "green" },
-            { x: 100, y: 220, width: 100, height: 10, color: "green" },
-            { x: 250, y: 180, width: 80, height: 10, color: "green" },
-        ],
-        goal: { x: 320, y: 150, width: 20, height: 20, color: "gold" }
-    },
-    {
-        platforms: [
-            { x: 0, y: 280, width: 400, height: 20, color: "green" },
-            { x: 50, y: 240, width: 60, height: 10, color: "green" },
-            { x: 150, y: 200, width: 80, height: 10, color: "green" },
-            { x: 270, y: 160, width: 100, height: 10, color: "green" },
-        ],
-        goal: { x: 350, y: 120, width: 20, height: 20, color: "gold" }
-    },
-    {
-        platforms: [
-            { x: 0, y: 280, width: 400, height: 20, color: "green" },
-            { x: 60, y: 240, width: 50, height: 10, color: "green" },
-            { x: 130, y: 200, width: 60, height: 10, color: "green" },
-            { x: 200, y: 160, width: 70, height: 10, color: "green" },
-            { x: 280, y: 120, width: 90, height: 10, color: "green" },
-        ],
-        goal: { x: 360, y: 90, width: 20, height: 20, color: "gold" }
-    }
+// Platforms (some moving)
+const platforms = [
+    { x: 0, y: 280, width: 400, height: 20, color: "green", dx: 0 },
+    { x: 100, y: 230, width: 80, height: 10, color: "green", dx: 1, minX: 100, maxX: 200 },
+    { x: 220, y: 200, width: 100, height: 10, color: "green", dx: 1.5, minX: 220, maxX: 300 },
+    { x: 50, y: 150, width: 120, height: 10, color: "green", dx: 0 },
+    { x: 250, y: 120, width: 100, height: 10, color: "green", dx: -1, minX: 200, maxX: 300 }
 ];
 
-let currentLevel = 0;
-let platforms = levels[currentLevel].platforms;
-let goal = levels[currentLevel].goal;
+// Hazards (spikes)
+const hazards = [
+    { x: 180, y: 280, width: 20, height: 20, color: "black" },
+    { x: 350, y: 280, width: 20, height: 20, color: "black" }
+];
+
+// Goal
+const goal = { x: 360, y: 80, width: 20, height: 20, color: "gold" };
+
+// Score
+let score = 0;
 
 // Controls
 const keys = {};
@@ -58,6 +45,8 @@ document.addEventListener("keyup", e => keys[e.code] = false);
 
 // Game loop
 function update() {
+    if (!player.alive) return;
+
     // Horizontal movement
     if (keys["ArrowLeft"]) player.dx = -player.speed;
     else if (keys["ArrowRight"]) player.dx = player.speed;
@@ -77,6 +66,15 @@ function update() {
 
     // Platform collision
     platforms.forEach(platform => {
+        // Move platform if it has dx
+        if (platform.dx) {
+            platform.x += platform.dx;
+            if (platform.x < platform.minX || platform.x + platform.width > platform.maxX) {
+                platform.dx *= -1; // bounce back
+            }
+        }
+
+        // Collision detection
         if (player.x < platform.x + platform.width &&
             player.x + player.width > platform.x &&
             player.y + player.height > platform.y &&
@@ -84,6 +82,19 @@ function update() {
             player.y = platform.y - player.height;
             player.dy = 0;
             player.grounded = true;
+            score += 1; // increment score when standing on a platform
+        }
+    });
+
+    // Hazard collision
+    hazards.forEach(h => {
+        if (player.x < h.x + h.width &&
+            player.x + player.width > h.x &&
+            player.y < h.y + h.height &&
+            player.y + player.height > h.y) {
+            player.alive = false;
+            alert("You hit a hazard! Game Over.");
+            resetGame();
         }
     });
 
@@ -101,55 +112,43 @@ function update() {
         player.x + player.width > goal.x &&
         player.y < goal.y + goal.height &&
         player.y + player.height > goal.y) {
-        nextLevel();
-        return; // Prevent double updates
+        alert(`You reached the goal! Final Score: ${score}`);
+        resetGame();
     }
 
     draw();
     requestAnimationFrame(update);
 }
 
-// Move to next level
-function nextLevel() {
-    currentLevel++;
-    if (currentLevel >= levels.length) {
-        currentLevel = 0;
-        loadLevel(currentLevel);
-        alert("Congratulations! You finished all levels!");
-    } else {
-        loadLevel(currentLevel);
-        alert(`Level ${currentLevel + 1}!`);
-    }
-}
-
-// Load a level
-function loadLevel(levelIndex) {
-    platforms = levels[levelIndex].platforms;
-    goal = levels[levelIndex].goal;
-    resetPlayer();
-}
-
-// Reset player position
-function resetPlayer() {
+// Reset game
+function resetGame() {
     player.x = 50;
     player.y = 250;
     player.dx = 0;
     player.dy = 0;
+    player.alive = true;
+    score = 0;
 }
 
 // Draw everything
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw level text
+    // Draw score
     ctx.fillStyle = "black";
     ctx.font = "16px Arial";
-    ctx.fillText(`Level: ${currentLevel + 1}`, 10, 20);
+    ctx.fillText(`Score: ${score}`, 10, 20);
 
     // Draw platforms
     platforms.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x, p.y, p.width, p.height);
+    });
+
+    // Draw hazards
+    hazards.forEach(h => {
+        ctx.fillStyle = h.color;
+        ctx.fillRect(h.x, h.y, h.width, h.height);
     });
 
     // Draw goal
