@@ -30,9 +30,10 @@ let score = 0;
 // Checkpoints
 let checkpoints = [
     { x: 50, y: 250 },
-    { x: 180, y: 220 },
-    { x: 350, y: 180 },
-    { x: 500, y: 150 },
+    { x: 250, y: 220 },
+    { x: 500, y: 180 },
+    { x: 750, y: 140 },
+    { x: 1000, y: 100 }
 ];
 let lastCheckpoint = { x: 50, y: 250 };
 
@@ -44,19 +45,31 @@ const platforms = [
     { x: 350, y: 170, width: 120, height: 10, color: "green", dx: -1, minX: 300, maxX: 400 },
     { x: 450, y: 140, width: 100, height: 10, color: "green", dx: 0 },
     { x: 550, y: 110, width: 80, height: 10, color: "green", dx: 1, minX: 550, maxX: 620 },
-    { x: 650, y: 80, width: 100, height: 10, color: "green", dx: -1, minX: 650, maxX: 720 }
+    { x: 650, y: 80, width: 100, height: 10, color: "green", dx: -1, minX: 650, maxX: 720 },
+    { x: 750, y: 120, width: 120, height: 10, color: "green", dx: 0 },
+    { x: 900, y: 90, width: 150, height: 10, color: "green", dx: 1, minX: 900, maxX: 1050 }
 ];
 
-// Hazards
+// Hazards (spikes/pits, some moving)
 const hazards = [
-    { x: 180, y: 280, width: 20, height: 20, color: "black" },
-    { x: 350, y: 280, width: 20, height: 20, color: "black" },
-    { x: 500, y: 280, width: 20, height: 20, color: "black" },
-    { x: 600, y: 280, width: 20, height: 20, color: "black" }
+    { x: 180, y: 280, width: 20, height: 20, color: "black", dx: 0 },
+    { x: 350, y: 280, width: 20, height: 20, color: "black", dx: 0 },
+    { x: 500, y: 280, width: 20, height: 20, color: "black", dx: 0.5, minX: 500, maxX: 550 },
+    { x: 600, y: 280, width: 20, height: 20, color: "black", dx: -0.5, minX: 580, maxX: 620 },
+    { x: 800, y: 280, width: 20, height: 20, color: "black", dx: 0 }
+];
+
+// Coins
+const coins = [
+    { x: 120, y: 200, width: 10, height: 10, collected: false },
+    { x: 240, y: 170, width: 10, height: 10, collected: false },
+    { x: 370, y: 140, width: 10, height: 10, collected: false },
+    { x: 520, y: 90, width: 10, height: 10, collected: false },
+    { x: 950, y: 60, width: 10, height: 10, collected: false }
 ];
 
 // Goal
-const goal = { x: 700, y: 50, width: 20, height: 20, color: "gold" };
+const goal = { x: 1100, y: 50, width: 20, height: 20, color: "gold" };
 
 // Controls
 const keys = {};
@@ -84,17 +97,14 @@ function update() {
     player.y += player.dy;
     player.grounded = false;
 
-    // Platform collision
+    // Platform collision & moving platforms
     platforms.forEach(platform => {
-        // Move platform
         if (platform.dx) {
             platform.x += platform.dx;
             if (platform.x < platform.minX || platform.x + platform.width > platform.maxX) {
                 platform.dx *= -1;
             }
         }
-
-        // Collision detection
         if (player.x < platform.x + platform.width &&
             player.x + player.width > platform.x &&
             player.y + player.height > platform.y &&
@@ -108,6 +118,10 @@ function update() {
 
     // Hazard collision
     hazards.forEach(h => {
+        if (h.dx) {
+            h.x += h.dx;
+            if (h.x < h.minX || h.x + h.width > h.maxX) h.dx *= -1;
+        }
         if (player.x < h.x + h.width &&
             player.x + player.width > h.x &&
             player.y < h.y + h.height &&
@@ -116,7 +130,19 @@ function update() {
         }
     });
 
-    // Update checkpoint if passed
+    // Coin collection
+    coins.forEach(c => {
+        if (!c.collected &&
+            player.x < c.x + c.width &&
+            player.x + player.width > c.x &&
+            player.y < c.y + c.height &&
+            player.y + player.height > c.y) {
+            c.collected = true;
+            score += 50;
+        }
+    });
+
+    // Update checkpoint
     checkpoints.forEach(cp => {
         if (player.x > cp.x) lastCheckpoint = { x: cp.x, y: cp.y };
     });
@@ -133,14 +159,14 @@ function update() {
         resetGame();
     }
 
-    // Update camera to keep player centered
+    // Camera follow
     cameraX = player.x - canvas.width / 2;
 
     draw();
     requestAnimationFrame(update);
 }
 
-// Respawn at last checkpoint
+// Respawn at checkpoint
 function respawnCheckpoint() {
     player.x = lastCheckpoint.x;
     player.y = lastCheckpoint.y;
@@ -160,6 +186,7 @@ function resetGame() {
     score = 0;
     lastCheckpoint = { x: 50, y: 250 };
     cameraX = 0;
+    coins.forEach(c => c.collected = false);
 }
 
 // Draw everything
@@ -183,11 +210,19 @@ function draw() {
         ctx.fillRect(h.x - cameraX, h.y, h.width, h.height);
     });
 
+    // Draw coins
+    coins.forEach(c => {
+        if (!c.collected) {
+            ctx.fillStyle = "yellow";
+            ctx.fillRect(c.x - cameraX, c.y, c.width, c.height);
+        }
+    });
+
     // Draw goal
     ctx.fillStyle = goal.color;
     ctx.fillRect(goal.x - cameraX, goal.y, goal.width, goal.height);
 
-    // Draw player (always center of screen)
+    // Draw player (centered)
     ctx.fillStyle = player.color;
     ctx.fillRect(canvas.width / 2 - player.width / 2, player.y, player.width, player.height);
 }
