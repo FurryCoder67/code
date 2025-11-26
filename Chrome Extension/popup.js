@@ -1,6 +1,10 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// Canvas size
+canvas.width = 400;
+canvas.height = 300;
+
 // Player setup
 const player = {
     x: 50,
@@ -17,6 +21,9 @@ const player = {
     alive: true
 };
 
+// Camera offset
+let cameraX = 0;
+
 // Score
 let score = 0;
 
@@ -25,7 +32,7 @@ let checkpoints = [
     { x: 50, y: 250 },
     { x: 180, y: 220 },
     { x: 350, y: 180 },
-    { x: 500, y: 150 }
+    { x: 500, y: 150 },
 ];
 let lastCheckpoint = { x: 50, y: 250 };
 
@@ -40,7 +47,7 @@ const platforms = [
     { x: 650, y: 80, width: 100, height: 10, color: "green", dx: -1, minX: 650, maxX: 720 }
 ];
 
-// Hazards (spikes/pits)
+// Hazards
 const hazards = [
     { x: 180, y: 280, width: 20, height: 20, color: "black" },
     { x: 350, y: 280, width: 20, height: 20, color: "black" },
@@ -77,7 +84,7 @@ function update() {
     player.y += player.dy;
     player.grounded = false;
 
-    // Platform collision and moving platforms
+    // Platform collision
     platforms.forEach(platform => {
         // Move platform
         if (platform.dx) {
@@ -95,7 +102,7 @@ function update() {
             player.y = platform.y - player.height;
             player.dy = 0;
             player.grounded = true;
-            score += 1; // gain score while on platforms
+            score += 1;
         }
     });
 
@@ -111,17 +118,11 @@ function update() {
 
     // Update checkpoint if passed
     checkpoints.forEach(cp => {
-        if (player.x > cp.x) {
-            lastCheckpoint = { x: cp.x, y: cp.y };
-        }
+        if (player.x > cp.x) lastCheckpoint = { x: cp.x, y: cp.y };
     });
 
-    // Prevent leaving canvas
-    if (player.x < 0) player.x = 0;
-    if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
-    if (player.y + player.height > canvas.height) {
-        respawnCheckpoint();
-    }
+    // Prevent falling off canvas
+    if (player.y + player.height > canvas.height) respawnCheckpoint();
 
     // Check goal
     if (player.x < goal.x + goal.width &&
@@ -131,6 +132,9 @@ function update() {
         alert(`You reached the goal! Final Score: ${score}`);
         resetGame();
     }
+
+    // Update camera to keep player centered
+    cameraX = player.x - canvas.width / 2;
 
     draw();
     requestAnimationFrame(update);
@@ -155,6 +159,7 @@ function resetGame() {
     player.alive = true;
     score = 0;
     lastCheckpoint = { x: 50, y: 250 };
+    cameraX = 0;
 }
 
 // Draw everything
@@ -169,23 +174,23 @@ function draw() {
     // Draw platforms
     platforms.forEach(p => {
         ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.width, p.height);
+        ctx.fillRect(p.x - cameraX, p.y, p.width, p.height);
     });
 
     // Draw hazards
     hazards.forEach(h => {
         ctx.fillStyle = h.color;
-        ctx.fillRect(h.x, h.y, h.width, h.height);
+        ctx.fillRect(h.x - cameraX, h.y, h.width, h.height);
     });
 
     // Draw goal
     ctx.fillStyle = goal.color;
-    ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
+    ctx.fillRect(goal.x - cameraX, goal.y, goal.width, goal.height);
 
-    // Draw player
+    // Draw player (always center of screen)
     ctx.fillStyle = player.color;
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctx.fillRect(canvas.width / 2 - player.width / 2, player.y, player.width, player.height);
 }
 
-// Start the game
+// Start game
 update();
