@@ -16,12 +16,12 @@ const player = {
     dy: 0,
     speed: 3,
     gravity: 0.5,
-    jumpForce: -12,  // stronger jump
+    jumpForce: -12,
     grounded: false,
     alive: true
 };
 
-// Camera offset
+// Camera
 let cameraX = 0;
 
 // Score
@@ -30,55 +30,61 @@ let score = 0;
 // Checkpoints
 let checkpoints = [
     { x: 50, y: 250 },
-    { x: 250, y: 220 },
-    { x: 500, y: 180 },
-    { x: 750, y: 140 },
-    { x: 1000, y: 100 },
-    { x: 1300, y: 80 },
-    { x: 1600, y: 60 }
+    { x: 300, y: 220 },
+    { x: 600, y: 180 },
+    { x: 900, y: 140 },
+    { x: 1200, y: 100 },
+    { x: 1600, y: 70 },
+    { x: 2000, y: 50 },
+    { x: 2500, y: 60 },
+    { x: 3000, y: 40 }
 ];
 let lastCheckpoint = { x: 50, y: 250 };
 
-// Platforms (some moving)
+// Platforms (some moving, some far for hard jumps)
 const platforms = [
     { x: 0, y: 280, width: 400, height: 20, color: "green", dx: 0 },
-    { x: 100, y: 230, width: 80, height: 10, color: "green", dx: 1, minX: 100, maxX: 200 },
-    { x: 220, y: 200, width: 100, height: 10, color: "green", dx: 1.5, minX: 220, maxX: 300 },
-    { x: 350, y: 170, width: 120, height: 10, color: "green", dx: -1, minX: 300, maxX: 400 },
-    { x: 450, y: 140, width: 100, height: 10, color: "green", dx: 0 },
-    { x: 550, y: 110, width: 80, height: 10, color: "green", dx: 1, minX: 550, maxX: 620 },
-    { x: 650, y: 80, width: 100, height: 10, color: "green", dx: -1, minX: 650, maxX: 720 },
-    { x: 750, y: 120, width: 120, height: 10, color: "green", dx: 0 },
-    { x: 900, y: 90, width: 150, height: 10, color: "green", dx: 1, minX: 900, maxX: 1050 },
-    { x: 1050, y: 60, width: 200, height: 10, color: "green", dx: -0.5, minX: 1050, maxX: 1250 },
-    { x: 1300, y: 40, width: 150, height: 10, color: "green", dx: 0 },
-    { x: 1500, y: 70, width: 120, height: 10, color: "green", dx: 1, minX: 1500, maxX: 1620 }
+    { x: 100, y: 230, width: 80, height: 10, color: "green", dx: 1, minX: 100, maxX: 200, spikes: [20, 40, 60] },
+    { x: 250, y: 200, width: 120, height: 10, color: "green", dx: 0, spikes: [30, 90] },
+    { x: 400, y: 170, width: 80, height: 10, color: "green", dx: 0, spikes: [40] },
+    { x: 550, y: 140, width: 100, height: 10, color: "green", dx: 1, minX: 550, maxX: 620, spikes: [50, 70] },
+    { x: 700, y: 100, width: 150, height: 10, color: "green", dx: 0, spikes: [20, 80, 120] },
+    { x: 900, y: 80, width: 100, height: 10, color: "green", dx: -1, minX: 900, maxX: 1050, spikes: [30, 60] },
+    { x: 1100, y: 60, width: 120, height: 10, color: "green", dx: 0, spikes: [40, 80] },
+    { x: 1300, y: 40, width: 200, height: 10, color: "green", dx: 0, spikes: [50, 100, 150] },
+    { x: 1600, y: 70, width: 120, height: 10, color: "green", dx: 1, minX: 1600, maxX: 1720, spikes: [30, 60] },
+    { x: 1900, y: 50, width: 150, height: 10, color: "green", dx: -1, minX: 1900, maxX: 2050, spikes: [40, 100] },
+    { x: 2200, y: 80, width: 200, height: 10, color: "green", dx: 0, spikes: [60, 120] },
+    { x: 2500, y: 40, width: 180, height: 10, color: "green", dx: 0, spikes: [50, 100] },
+    { x: 2800, y: 20, width: 200, height: 10, color: "green", dx: 0, spikes: [50, 150] }
 ];
 
-// Hazards (spikes/pits, moving)
+// Hazards (ground spikes, moving spikes)
 const hazards = [
     { x: 180, y: 280, width: 20, height: 20, color: "black", dx: 0 },
     { x: 350, y: 280, width: 20, height: 20, color: "black", dx: 0 },
     { x: 500, y: 280, width: 20, height: 20, color: "black", dx: 0.5, minX: 500, maxX: 550 },
     { x: 600, y: 280, width: 20, height: 20, color: "black", dx: -0.5, minX: 580, maxX: 620 },
-    { x: 800, y: 280, width: 20, height: 20, color: "black", dx: 0 },
     { x: 1000, y: 280, width: 20, height: 20, color: "black", dx: 1, minX: 1000, maxX: 1050 },
-    { x: 1200, y: 280, width: 20, height: 20, color: "black", dx: -1, minX: 1180, maxX: 1250 }
+    { x: 1200, y: 280, width: 20, height: 20, color: "black", dx: -1, minX: 1180, maxX: 1250 },
+    { x: 1800, y: 280, width: 20, height: 20, color: "black", dx: 0 }
 ];
 
 // Coins
 const coins = [
     { x: 120, y: 200, width: 10, height: 10, collected: false },
-    { x: 240, y: 170, width: 10, height: 10, collected: false },
-    { x: 370, y: 140, width: 10, height: 10, collected: false },
-    { x: 520, y: 90, width: 10, height: 10, collected: false },
+    { x: 260, y: 170, width: 10, height: 10, collected: false },
+    { x: 450, y: 140, width: 10, height: 10, collected: false },
+    { x: 720, y: 110, width: 10, height: 10, collected: false },
     { x: 950, y: 60, width: 10, height: 10, collected: false },
-    { x: 1120, y: 30, width: 10, height: 10, collected: false },
-    { x: 1550, y: 50, width: 10, height: 10, collected: false }
+    { x: 1150, y: 30, width: 10, height: 10, collected: false },
+    { x: 1550, y: 50, width: 10, height: 10, collected: false },
+    { x: 2100, y: 60, width: 10, height: 10, collected: false },
+    { x: 2600, y: 30, width: 10, height: 10, collected: false }
 ];
 
 // Goal
-const goal = { x: 1650, y: 20, width: 20, height: 20, color: "gold" };
+const goal = { x: 3300, y: 20, width: 20, height: 20, color: "gold" };
 
 // Controls
 const keys = {};
@@ -90,9 +96,9 @@ function update() {
     if (!player.alive) return;
 
     // Horizontal movement
+    player.dx = 0;
     if (keys["ArrowLeft"]) player.dx = -player.speed;
-    else if (keys["ArrowRight"]) player.dx = player.speed;
-    else player.dx = 0;
+    if (keys["ArrowRight"]) player.dx = player.speed;
 
     // Jump
     if (keys["Space"] && player.grounded) {
@@ -100,30 +106,40 @@ function update() {
         player.grounded = false;
     }
 
-    // Apply gravity
+    // Gravity
     player.dy += player.gravity;
     player.x += player.dx;
     player.y += player.dy;
     player.grounded = false;
 
     // Platform collision & moving platforms
-    platforms.forEach(platform => {
-        if (platform.dx) {
-            platform.x += platform.dx;
-            if (platform.x < platform.minX || platform.x + platform.width > platform.maxX) platform.dx *= -1;
+    platforms.forEach(p => {
+        if (p.dx) {
+            p.x += p.dx;
+            if (p.x < p.minX || p.x + p.width > p.maxX) p.dx *= -1;
         }
-        if (player.x < platform.x + platform.width &&
-            player.x + player.width > platform.x &&
-            player.y + player.height > platform.y &&
-            player.y + player.height < platform.y + platform.height + player.dy) {
-            player.y = platform.y - player.height;
+        if (player.x < p.x + p.width &&
+            player.x + player.width > p.x &&
+            player.y + player.height > p.y &&
+            player.y + player.height < p.y + p.height + player.dy) {
+            player.y = p.y - player.height;
             player.dy = 0;
             player.grounded = true;
             score += 1;
+
+            // Check spikes on platform
+            if (p.spikes) {
+                p.spikes.forEach(s => {
+                    let spikeX = p.x + s;
+                    if (player.x + player.width > spikeX && player.x < spikeX + 10) {
+                        respawnCheckpoint();
+                    }
+                });
+            }
         }
     });
 
-    // Hazard collision
+    // Hazards
     hazards.forEach(h => {
         if (h.dx) {
             h.x += h.dx;
@@ -137,7 +153,7 @@ function update() {
         }
     });
 
-    // Coin collection
+    // Coins
     coins.forEach(c => {
         if (!c.collected &&
             player.x < c.x + c.width &&
@@ -154,7 +170,7 @@ function update() {
         if (player.x > cp.x) lastCheckpoint = { x: cp.x, y: cp.y };
     });
 
-    // Prevent falling
+    // Falling off screen
     if (player.y + player.height > canvas.height) respawnCheckpoint();
 
     // Check goal
@@ -196,7 +212,7 @@ function resetGame() {
     coins.forEach(c => c.collected = false);
 }
 
-// Draw everything
+// Draw
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -209,6 +225,14 @@ function draw() {
     platforms.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x - cameraX, p.y, p.width, p.height);
+
+        // Draw spikes
+        if (p.spikes) {
+            ctx.fillStyle = "black";
+            p.spikes.forEach(s => {
+                ctx.fillRect(p.x + s - cameraX, p.y - 10, 10, 10);
+            });
+        }
     });
 
     // Hazards
