@@ -1,11 +1,10 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Canvas size
 canvas.width = 400;
 canvas.height = 300;
 
-// Player setup
+// Player
 const player = {
     x: 50,
     y: 250,
@@ -29,36 +28,26 @@ let score = 0;
 
 // Checkpoints
 const checkpoints = [
-    { x: 50, y: 250 },
-    { x: 300, y: 220 },
-    { x: 700, y: 180 },
-    { x: 1200, y: 140 },
-    { x: 1600, y: 100 },
-    { x: 2100, y: 60 },
+    { x: 50, y: 250 }, { x: 300, y: 220 }, { x: 700, y: 180 },
+    { x: 1200, y: 140 }, { x: 1600, y: 100 }, { x: 2100, y: 60 },
     { x: 2700, y: 40 }
 ];
 let lastCheckpoint = { x: 50, y: 250 };
 
 // Platforms
 const platforms = [
-    { x: 0, y: 280, width: 400, height: 20, color: "green", dx: 0, spikes: [] },
-    { x: 150, y: 230, width: 100, height: 10, color: "green", dx: 0.5, minX: 150, maxX: 250, spikes: [20, 60] },
-    { x: 300, y: 200, width: 120, height: 10, color: "green", dx: 0, spikes: [30, 80] },
-    { x: 500, y: 170, width: 100, height: 10, color: "green", dx: 0, spikes: [20, 60] },
-    { x: 700, y: 140, width: 150, height: 10, color: "green", dx: 0.7, minX: 700, maxX: 850, spikes: [50, 100] },
-    { x: 1000, y: 110, width: 120, height: 10, color: "green", dx: 0, spikes: [40, 80] },
-    { x: 1300, y: 80, width: 200, height: 10, color: "green", dx: 0, spikes: [50, 150] },
-    { x: 1700, y: 60, width: 150, height: 10, color: "green", dx: 0.5, minX: 1700, maxX: 1800, spikes: [50, 100] },
-    { x: 2000, y: 40, width: 180, height: 10, color: "green", dx: 0, spikes: [60, 120] },
-    { x: 2300, y: 20, width: 200, height: 10, color: "green", dx: 0, spikes: [50, 150] }
+    { x: 0, y: 280, width: 400, height: 20, color: "green", dx: 0, minX: 0, maxX: 0, spikes: [] },
+    { x: 150, y: 230, width: 100, height: 10, color: "green", dx: 1, minX: 150, maxX: 300, spikes: [20, 60] },
+    { x: 300, y: 200, width: 120, height: 10, color: "green", dx: 1.2, minX: 300, maxX: 450, spikes: [30, 80] },
+    { x: 500, y: 170, width: 100, height: 10, color: "green", dx: 0.8, minX: 500, maxX: 650, spikes: [20, 60] },
+    { x: 700, y: 140, width: 150, height: 10, color: "green", dx: 1, minX: 700, maxX: 850, spikes: [50, 100] },
+    { x: 1000, y: 110, width: 120, height: 10, color: "green", dx: 1, minX: 1000, maxX: 1150, spikes: [40, 80] }
 ];
 
-// Hazards – moving alligators
-const hazards = [
-    { x: 400, y: 260, width: 40, height: 20, color: "darkgreen", dx: 1, minX: 400, maxX: 500 },
-    { x: 900, y: 260, width: 40, height: 20, color: "darkgreen", dx: -1, minX: 850, maxX: 950 },
-    { x: 1500, y: 260, width: 40, height: 20, color: "darkgreen", dx: 1, minX: 1500, maxX: 1600 },
-    { x: 2100, y: 260, width: 40, height: 20, color: "darkgreen", dx: -1, minX: 2050, maxX: 2150 }
+// Volcanoes
+const volcanoes = [
+    { x: 600, y: 270, width: 30, height: 30, lava: [], lastErupt: 0 },
+    { x: 1300, y: 270, width: 30, height: 30, lava: [], lastErupt: 0 }
 ];
 
 // Coins
@@ -66,13 +55,11 @@ const coins = [
     { x: 200, y: 190, width: 10, height: 10, collected: false },
     { x: 350, y: 160, width: 10, height: 10, collected: false },
     { x: 750, y: 120, width: 10, height: 10, collected: false },
-    { x: 1200, y: 90, width: 10, height: 10, collected: false },
-    { x: 1800, y: 50, width: 10, height: 10, collected: false },
-    { x: 2400, y: 20, width: 10, height: 10, collected: false }
+    { x: 1200, y: 90, width: 10, height: 10, collected: false }
 ];
 
 // Goal
-const goal = { x: 2600, y: 20, width: 20, height: 20, color: "gold" };
+const goal = { x: 1500, y: 20, width: 20, height: 20, color: "gold" };
 
 // Controls
 const keys = {};
@@ -80,7 +67,7 @@ document.addEventListener("keydown", e => keys[e.code] = true);
 document.addEventListener("keyup", e => keys[e.code] = false);
 
 // Game loop
-function update() {
+function update(time = 0) {
     if (!player.alive) return;
 
     // Movement
@@ -114,24 +101,30 @@ function update() {
             player.dy = 0;
             player.grounded = true;
 
-            // Check spikes
+            // Spikes collision
             if (p.spikes) {
                 p.spikes.forEach(s => {
-                    if (player.x + player.width > p.x + s && player.x < p.x + s + 10) respawnCheckpoint();
+                    const spikeX = p.x + s;
+                    if (player.x + player.width > spikeX && player.x < spikeX + 10) respawnCheckpoint();
                 });
             }
         }
     });
 
-    // Hazards (alligators)
-    hazards.forEach(h => {
-        h.x += h.dx;
-        if (h.x < h.minX || h.x + h.width > h.maxX) h.dx *= -1;
-
-        if (player.x < h.x + h.width &&
-            player.x + player.width > h.x &&
-            player.y < h.y + h.height &&
-            player.y + player.height > h.y) respawnCheckpoint();
+    // Volcanoes eruption every 2s
+    volcanoes.forEach(v => {
+        if (time - v.lastErupt > 2000) {
+            v.lava.push({ x: v.x + v.width / 2, y: v.y, dx: (Math.random() - 0.5) * 2, dy: -5 });
+            v.lastErupt = time;
+        }
+        v.lava.forEach(l => {
+            l.dy += 0.2; // gravity
+            l.y += l.dy;
+            l.x += l.dx;
+            if (player.x < l.x + 5 && player.x + player.width > l.x &&
+                player.y < l.y + 5 && player.y + player.height > l.y) respawnCheckpoint();
+        });
+        v.lava = v.lava.filter(l => l.y < canvas.height + 10);
     });
 
     // Coins
@@ -159,14 +152,14 @@ function update() {
         player.x + player.width > goal.x &&
         player.y < goal.y + goal.height &&
         player.y + player.height > goal.y) {
-        alert(`You reached the goal! Final Score: ${score}`);
+        alert(`You reached the goal! Score: ${score}`);
         resetGame();
     }
 
     // Camera
     cameraX = player.x - canvas.width / 2;
 
-    draw();
+    draw(time);
     requestAnimationFrame(update);
 }
 
@@ -194,10 +187,10 @@ function resetGame() {
 }
 
 // Draw
-function draw() {
-    // Background gradient based on player position
+function draw(time) {
+    // Background
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    const colorShift = Math.min(player.x / 2600, 1);
+    const colorShift = Math.min(player.x / 1500, 1);
     grad.addColorStop(0, `rgb(${50 + 100 * colorShift}, ${150 - 50 * colorShift}, 255)`);
     grad.addColorStop(1, `rgb(${100 + 50 * colorShift}, ${200 - 100 * colorShift}, 255)`);
     ctx.fillStyle = grad;
@@ -212,18 +205,36 @@ function draw() {
     platforms.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x - cameraX, p.y, p.width, p.height);
-        // Spikes
+        // Draw spikes as triangles
         ctx.fillStyle = "black";
-        if (p.spikes) p.spikes.forEach(s => ctx.fillRect(p.x + s - cameraX, p.y - 10, 10, 10));
+        if (p.spikes) p.spikes.forEach(s => {
+            ctx.beginPath();
+            ctx.moveTo(p.x + s - cameraX, p.y);
+            ctx.lineTo(p.x + s + 10 - cameraX, p.y);
+            ctx.lineTo(p.x + s + 5 - cameraX, p.y - 10);
+            ctx.closePath();
+            ctx.fill();
+        });
     });
 
-    // Hazards (alligators)
-    hazards.forEach(h => {
-        ctx.fillStyle = h.color;
-        ctx.fillRect(h.x - cameraX, h.y, h.width, h.height);
-        // Draw eyes for effect
-        ctx.fillStyle = "red";
-        ctx.fillRect(h.x - cameraX + 5, h.y + 5, 5, 5);
+    // Volcanoes and lava
+    volcanoes.forEach(v => {
+        // Draw volcano
+        ctx.fillStyle = "brown";
+        ctx.beginPath();
+        ctx.moveTo(v.x - cameraX, v.y + v.height);
+        ctx.lineTo(v.x + v.width / 2 - cameraX, v.y);
+        ctx.lineTo(v.x + v.width - cameraX, v.y + v.height);
+        ctx.closePath();
+        ctx.fill();
+
+        // Draw lava
+        ctx.fillStyle = "orange";
+        v.lava.forEach(l => {
+            ctx.beginPath();
+            ctx.arc(l.x - cameraX, l.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+        });
     });
 
     // Coins
