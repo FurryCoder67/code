@@ -11,91 +11,98 @@ const player = {
     width: 20,
     height: 20,
     color: "#ff4d4d",
-    dx: 0,
+    dx: 2, // constant forward speed
     dy: 0,
-    speed: 3,
     gravity: 0.5,
     jumpForce: -10,
     grounded: false,
+    flying: false,
+    spaceship: false // toggle spaceship mode
 };
 
 // Camera
 let cameraX = 0;
 
-// Platforms
-const platforms = [
-    { x: 0, y: 280, width: 400, dx: 0, minX: 0, maxX: 0, spikes: [50, 150, 300] },
-    { x: 450, y: 230, width: 100, dx: 1, minX: 450, maxX: 600, spikes: [20, 60] },
-    { x: 650, y: 200, width: 120, dx: 1.2, minX: 650, maxX: 800, spikes: [40, 80] },
-    { x: 850, y: 170, width: 150, dx: 0.8, minX: 850, maxX: 1000, spikes: [50, 100] },
-    { x: 1100, y: 140, width: 120, dx: 0.5, minX: 1100, maxX: 1250, spikes: [30, 70] },
-];
-
 // Controls
 const keys = {};
 document.addEventListener("keydown", e => keys[e.code] = true);
 document.addEventListener("keyup", e => keys[e.code] = false);
+document.addEventListener("keydown", e => { if (e.code === "KeyS") player.spaceship = !player.spaceship; }); // press S to toggle spaceship
 
-// Initialize player above first safe platform
-function initPlayer() {
-    const firstPlatform = platforms[0];
-    player.x = firstPlatform.x + 20;
-    player.y = firstPlatform.y - player.height - 1; // slightly above platform
-    player.dy = 0;
+// Platforms (randomly generated)
+const platforms = [];
+let platformX = 0;
+for (let i = 0; i < 30; i++) {
+    const width = 80 + Math.random() * 100;
+    const y = 100 + Math.random() * 180;
+    platforms.push({
+        x: platformX,
+        y: y,
+        width: width,
+        spikes: [width / 2 - 5], // 1 spike in the middle
+        alligator: Math.random() < 0.3 ? { dx: 1.5, width: 20, height: 10, xOffset: width / 2 } : null
+    });
+    platformX += width + 50 + Math.random() * 50;
 }
 
 // Game loop
 function update(time = 0) {
-    // Movement
-    player.dx = 0;
-    if (keys["ArrowLeft"]) player.dx = -player.speed;
-    if (keys["ArrowRight"]) player.dx = player.speed;
+    // Constant forward movement
+    player.x += player.dx;
 
-    // Jump
-    if (keys["Space"] && player.grounded) {
-        player.dy = player.jumpForce;
-        player.grounded = false;
+    // Player controls
+    if (!player.spaceship) {
+        if (keys["Space"] && player.grounded) {
+            player.dy = player.jumpForce;
+            player.grounded = false;
+        }
+    } else {
+        // Spaceship mode
+        if (keys["Space"]) player.dy = -3;
+        else player.dy += player.gravity * 0.2; // slower gravity in spaceship mode
     }
 
     // Gravity
-    player.dy += player.gravity;
-    player.x += player.dx;
+    if (!player.grounded || player.spaceship) player.dy += player.gravity;
     player.y += player.dy;
     player.grounded = false;
 
     // Platforms
     platforms.forEach(p => {
-        // Move platform
-        if (p.dx) {
-            p.x += p.dx;
-            if (p.x < p.minX || p.x + p.width > p.maxX) p.dx *= -1;
+        // Collision
+        if (player.x + player.width > p.x && player.x < p.x + p.width &&
+            player.y + player.height > p.y && player.y + player.height < p.y + 10 + player.dy) {
+            if (!player.spaceship) {
+                player.y = p.y - player.height;
+                player.dy = 0;
+                player.grounded = true;
+            }
         }
 
-        // Collision
-        if (player.x < p.x + p.width &&
-            player.x + player.width > p.x &&
-            player.y + player.height > p.y &&
-            player.y + player.height < p.y + 10 + player.dy) {
+        // Spikes collision
+        p.spikes.forEach(s => {
+            const spikeX = p.x + s;
+            if (player.x + player.width > spikeX && player.x < spikeX + 10 &&
+                player.y + player.height > p.y - 10 && player.y < p.y) {
+                respawn();
+            }
+        });
 
-            player.y = p.y - player.height;
-            player.dy = 0;
-            player.grounded = true;
-
-            // Move player with platform
-            player.x += p.dx;
-
-            // Spike collision
-            if (p.spikes) {
-                p.spikes.forEach(s => {
-                    const spikeX = p.x + s;
-                    if (player.x + player.width > spikeX && player.x < spikeX + 10) respawn();
-                });
+        // Alligator collision
+        if (p.alligator) {
+            p.alligator.xOffset += p.alligator.dx;
+            if (p.alligator.xOffset < 0 || p.alligator.xOffset > p.width - 20) p.alligator.dx *= -1;
+            const ax = p.x + p.alligator.xOffset;
+            const ay = p.y - p.alligator.height;
+            if (player.x + player.width > ax && player.x < ax + 20 &&
+                player.y + player.height > ay && player.y < ay + 10) {
+                respawn();
             }
         }
     });
 
-    // Falling off level
-    if (player.y > canvas.height) respawn();
+    // Falling off screen
+    if (player.y > canvas.height || player.y < -player.height) respawn();
 
     // Camera
     cameraX = player.x - canvas.width / 2;
@@ -106,26 +113,26 @@ function update(time = 0) {
 
 // Respawn
 function respawn() {
-    const firstPlatform = platforms[0];
-    player.x = firstPlatform.x + 20;
-    player.y = firstPlatform.y - player.height - 1;
+    player.x = 50;
+    player.y = 250;
     player.dy = 0;
+    player.grounded = false;
 }
 
 // Draw
 function draw(time) {
-    // Background changes color every second
-    const seconds = Math.floor(time / 1000) % 6; // cycles through 6 colors
+    // Background changing every second
+    const seconds = Math.floor(time / 1000) % 6;
     const colors = ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf", "#9bf6ff", "#a0c4ff"];
     ctx.fillStyle = colors[seconds];
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Platforms
+    // Platforms and spikes
     ctx.fillStyle = "#33cc33";
     platforms.forEach(p => {
         ctx.fillRect(p.x - cameraX, p.y, p.width, 10);
 
-        // Spikes as flat triangles
+        // spike
         ctx.fillStyle = "black";
         p.spikes.forEach(s => {
             ctx.beginPath();
@@ -135,6 +142,14 @@ function draw(time) {
             ctx.closePath();
             ctx.fill();
         });
+
+        // alligator
+        if (p.alligator) {
+            ctx.fillStyle = "#228B22";
+            const ax = p.x + p.alligator.xOffset - cameraX;
+            const ay = p.y - p.alligator.height;
+            ctx.fillRect(ax, ay, 20, 10);
+        }
     });
 
     // Player
@@ -142,6 +157,5 @@ function draw(time) {
     ctx.fillRect(canvas.width / 2 - player.width / 2, player.y, player.width, player.height);
 }
 
-// Start game
-initPlayer();
+// Start
 update();
