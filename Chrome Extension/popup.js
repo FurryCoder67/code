@@ -6,8 +6,8 @@ canvas.height = 300;
 
 // Player
 const player = {
-    x: 50,
-    y: 250,
+    x: 0, // will be set to first platform
+    y: 0,
     width: 20,
     height: 20,
     color: "#ff4d4d",
@@ -16,7 +16,6 @@ const player = {
     gravity: 0.5,
     jumpForce: -10,
     grounded: false,
-    flying: false,
     spaceship: false // toggle spaceship mode
 };
 
@@ -32,9 +31,14 @@ document.addEventListener("keydown", e => { if (e.code === "KeyS") player.spaces
 // Platforms (randomly generated)
 const platforms = [];
 let platformX = 0;
+
+// Generate the first platform at the bottom so the player always spawns safely
+platforms.push({ x: platformX, y: 250, width: 200, spikes: [100], alligator: null });
+platformX += 250;
+
 for (let i = 0; i < 30; i++) {
     const width = 80 + Math.random() * 100;
-    const y = 100 + Math.random() * 180;
+    const y = 100 + Math.random() * 150; // keep platforms reachable
     platforms.push({
         x: platformX,
         y: y,
@@ -44,6 +48,14 @@ for (let i = 0; i < 30; i++) {
     });
     platformX += width + 50 + Math.random() * 50;
 }
+
+// Initialize player on first platform
+function initPlayer() {
+    const firstPlatform = platforms[0];
+    player.x = firstPlatform.x + firstPlatform.width / 2 - player.width / 2;
+    player.y = firstPlatform.y - player.height - 1;
+}
+initPlayer();
 
 // Game loop
 function update(time = 0) {
@@ -69,6 +81,12 @@ function update(time = 0) {
 
     // Platforms
     platforms.forEach(p => {
+        // Alligator movement
+        if (p.alligator) {
+            p.alligator.xOffset += p.alligator.dx;
+            if (p.alligator.xOffset < 0 || p.alligator.xOffset > p.width - 20) p.alligator.dx *= -1;
+        }
+
         // Collision
         if (player.x + player.width > p.x && player.x < p.x + p.width &&
             player.y + player.height > p.y && player.y + player.height < p.y + 10 + player.dy) {
@@ -79,7 +97,7 @@ function update(time = 0) {
             }
         }
 
-        // Spikes collision
+        // Spike collision
         p.spikes.forEach(s => {
             const spikeX = p.x + s;
             if (player.x + player.width > spikeX && player.x < spikeX + 10 &&
@@ -90,8 +108,6 @@ function update(time = 0) {
 
         // Alligator collision
         if (p.alligator) {
-            p.alligator.xOffset += p.alligator.dx;
-            if (p.alligator.xOffset < 0 || p.alligator.xOffset > p.width - 20) p.alligator.dx *= -1;
             const ax = p.x + p.alligator.xOffset;
             const ay = p.y - p.alligator.height;
             if (player.x + player.width > ax && player.x < ax + 20 &&
@@ -113,8 +129,9 @@ function update(time = 0) {
 
 // Respawn
 function respawn() {
-    player.x = 50;
-    player.y = 250;
+    const firstPlatform = platforms[0];
+    player.x = firstPlatform.x + firstPlatform.width / 2 - player.width / 2;
+    player.y = firstPlatform.y - player.height - 1;
     player.dy = 0;
     player.grounded = false;
 }
@@ -127,7 +144,7 @@ function draw(time) {
     ctx.fillStyle = colors[seconds];
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Platforms and spikes
+    // Platforms
     ctx.fillStyle = "#33cc33";
     platforms.forEach(p => {
         ctx.fillRect(p.x - cameraX, p.y, p.width, 10);
