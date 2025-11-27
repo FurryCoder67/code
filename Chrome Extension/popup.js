@@ -70,6 +70,8 @@ document.addEventListener("keyup", e => keys[e.code] = false);
 function update(time = 0) {
     if (!player.alive) return;
 
+    let onPlatform = false;
+
     // Movement
     player.dx = 0;
     if (keys["ArrowLeft"]) player.dx = -player.speed;
@@ -89,10 +91,12 @@ function update(time = 0) {
 
     // Platforms
     platforms.forEach(p => {
+        // Move platform
         if (p.dx) {
             p.x += p.dx;
             if (p.x < p.minX || p.x + p.width > p.maxX) p.dx *= -1;
         }
+        // Collision
         if (player.x < p.x + p.width &&
             player.x + player.width > p.x &&
             player.y + player.height > p.y &&
@@ -100,6 +104,10 @@ function update(time = 0) {
             player.y = p.y - player.height;
             player.dy = 0;
             player.grounded = true;
+            onPlatform = true;
+
+            // Move player with platform
+            player.x += p.dx;
 
             // Spikes collision
             if (p.spikes) {
@@ -188,9 +196,9 @@ function resetGame() {
 
 // Draw
 function draw(time) {
-    // Background
+    // Background color shifts slowly based on player x
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    const colorShift = Math.min(player.x / 1500, 1);
+    const colorShift = Math.min(player.x / goal.x, 1);
     grad.addColorStop(0, `rgb(${50 + 100 * colorShift}, ${150 - 50 * colorShift}, 255)`);
     grad.addColorStop(1, `rgb(${100 + 50 * colorShift}, ${200 - 100 * colorShift}, 255)`);
     ctx.fillStyle = grad;
@@ -205,7 +213,7 @@ function draw(time) {
     platforms.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x - cameraX, p.y, p.width, p.height);
-        // Draw spikes as triangles
+        // Draw spikes as flat triangles
         ctx.fillStyle = "black";
         if (p.spikes) p.spikes.forEach(s => {
             ctx.beginPath();
@@ -219,7 +227,7 @@ function draw(time) {
 
     // Volcanoes and lava
     volcanoes.forEach(v => {
-        // Draw volcano
+        // Volcano shape
         ctx.fillStyle = "brown";
         ctx.beginPath();
         ctx.moveTo(v.x - cameraX, v.y + v.height);
@@ -228,7 +236,7 @@ function draw(time) {
         ctx.closePath();
         ctx.fill();
 
-        // Draw lava
+        // Lava
         ctx.fillStyle = "orange";
         v.lava.forEach(l => {
             ctx.beginPath();
