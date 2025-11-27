@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Validation</title>
+</head>
+
+<body>
+    <script>
+        class SignatureChecker {
+            constructor(secretKey) {
+                this.secretKey = secretKey;
+            }
+
+            getCharValue(char) {
+                if (char >= 'a' && char <= 'z') {
+                    return char.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
+                }
+                if (char >= 'A' && char <= 'Z') {
+                    return char.charCodeAt(0) - 'A'.charCodeAt(0) + 27;
+                }
+                return 0;
+            }
+
+            getStringValue(str) {
+                let sum = 0;
+                for (let i = 0; i < str.length; i++) {
+                    sum += this.getCharValue(str[i]);
+                }
+                return sum;
+            }
+
+            isSignatureValid(message, givenSignature) {
+                const messageSum = this.getStringValue(message);
+                const keySum = this.getStringValue(this.secretKey);
+                const total = messageSum + keySum;
+
+                return total == givenSignature;
+            }
+        }
+        const checker = new SignatureChecker("bar");
+        console.log(checker.isSignatureValid("foo", 57));
+        const another = new SignatureChecker("WORLD");
+        console.log(another.isSignatureValid("hello", 500));
+        const another2 = new SignatureChecker("Rocks");
+        console.log(another2.isSignatureValid("freeCodeCamp", 238));
+
+    </script>
+</body>
+
+</html>
