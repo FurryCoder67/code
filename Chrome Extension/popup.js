@@ -28,6 +28,12 @@ function genObjects() {
             x += gap + 20;
         }
     }
+
+    // add spaceship obstacles in sky
+    for (let i = 500; i < 4000; i += 200 + Math.random() * 100) {
+        const y = 50 + Math.random() * 150;
+        objects.push({ x: i, y, w: 20, h: 20, type: "sky" });
+    }
 }
 genObjects();
 player.y = objects[0].y - player.h - 1;
@@ -42,10 +48,18 @@ function update(time = 0) {
 
     for (let o of objects) {
         o.x -= speed;
+
         if (o.type === "platform" && (player.x + player.w > o.x && player.x < o.x + o.w && player.y + player.h > o.y && player.y + player.h < o.y + o.h + Math.abs(player.dy) + 2 && !player.spaceship)) {
             player.y = o.y - player.h; player.dy = 0; player.grounded = true;
         }
+
+        // ground hazards
         if (o.type === "hazard" && (player.x + player.w > o.x && player.x < o.x + o.w && player.y + player.h > o.y && player.y < o.y + o.h)) {
+            respawn();
+        }
+
+        // sky hazards (spaceship mode)
+        if (o.type === "sky" && player.spaceship && (player.x + player.w > o.x && player.x < o.x + o.w && player.y + player.h > o.y && player.y < o.y + o.h)) {
             respawn();
         }
     }
@@ -64,7 +78,8 @@ function draw(time) {
             ctx.fillStyle = "#2ecc71"; ctx.fillRect(o.x, o.y, o.w, o.h);
             if (o.spike) { ctx.fillStyle = "#111"; ctx.beginPath(); ctx.moveTo(o.x + o.w / 2 - 5, o.y); ctx.lineTo(o.x + o.w / 2 + 5, o.y); ctx.lineTo(o.x + o.w / 2, o.y - 10); ctx.closePath(); ctx.fill(); }
         }
-        else { ctx.fillStyle = "#e74c3c"; ctx.fillRect(o.x, o.y, o.w, o.h); }
+        else if (o.type === "hazard") { ctx.fillStyle = "#e74c3c"; ctx.fillRect(o.x, o.y, o.w, o.h); }
+        else if (o.type === "sky") { ctx.fillStyle = "#3498db"; ctx.fillRect(o.x, o.y, o.w, o.h); } // blue for sky obstacles
     }
 
     ctx.fillStyle = player.color; ctx.fillRect(player.x, player.y, player.w, player.h);
