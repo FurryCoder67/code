@@ -1,0 +1,281 @@
+:root {
+    --bg: #071021;
+    --panel: #0b1220;
+    --muted: #94a3b8;
+    --accent: #7dd3fc;
+    --glass: rgba(255, 255, 255, 0.03);
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(135deg, #071021, #0c2136);
+    color: #e6eef6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.app {
+    width: 980px;
+    max-width: 100%;
+    background: var(--glass);
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 13px
+}
+
+.header-controls {
+    display: flex;
+    gap: 8px
+}
+
+.btn {
+    background: linear-gradient(180deg, var(--accent), #3ecff6);
+    color: #022;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600
+}
+
+.btn.link {
+    background: transparent;
+    color: var(--accent);
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.hint {
+    color: var(--muted);
+    margin-top: 12px;
+    font-size: 13px
+}
+
+.view {
+    display: none
+}
+
+.view.active {
+    display: block
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6)
+}
+
+.thumb {
+    height: 120px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden
+}
+
+.meta {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--muted)
+}
+
+.meta small {
+    display: block;
+    color: var(--muted);
+    font-size: 12px
+}
+
+/* Views */
+.view-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px
+}
+
+.controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 6px
+}
+
+.status {
+    color: var(--accent);
+    margin-top: 8px
+}
+
+/* Tic Tac Toe board */
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 360px
+}
+
+.cell {
+    width: 110px;
+    height: 110px;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform .08s;
+}
+
+.cell:hover {
+    transform: scale(1.02)
+}
+
+.cell.disabled {
+    cursor: default;
+    opacity: 0.6
+}
+
+/* Connect 4 */
+.cf-board {
+    display: grid;
+    grid-template-columns: repeat(7, 54px);
+    gap: 7px;
+    background: linear-gradient(#08313b, #02212a);
+    padding: 12px;
+    border-radius: 10px;
+    justify-content: center;
+    width: max-content
+}
+
+.cf-slot {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #0b1116;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer
+}
+
+.cf-slot:hover {
+    filter: brightness(1.08)
+}
+
+.disc {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%
+}
+
+.disc.empty {
+    background: transparent
+}
+
+.disc.R {
+    background: #ff7b7b
+}
+
+.disc.Y {
+    background: #ffe08a
+}
+
+/* RPS */
+.rps-panel {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    margin-top: 10px
+}
+
+.rps-col {
+    text-align: center
+}
+
+.rps-large {
+    font-size: 48px
+}
+
+.rps-result-area {
+    min-width: 160px
+}
+
+/* Footer */
+.footer {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px
+}
+
+/* Responsive */
+@media (max-width:920px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    .board .cell {
+        width: 90px;
+        height: 90px;
+        font-size: 40px
+    }
+}
+
+@media (max-width:520px) {
+    .grid {
+        grid-template-columns: 1fr
+    }
+
+    .app {
+        padding: 12px
+    }
+
+    .cf-board {
+        transform: scale(.85);
+        transform-origin: center top
+    }
+}

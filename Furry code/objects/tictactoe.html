@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+</head>
+
+<body>
+    <script>
+        class TicTacToe {
+            constructor(array) {
+                this.grid = [];
+                let count = 0;
+                for (let i = 0; i < 3; i++) {
+                    this.grid[i] = [];
+                    for (let y = 0; y < 3; y++) {
+                        this.grid[i][y] = array[count];
+                        count++;
+                    }
+                }
+            }
+            isGameWon() {
+                return is3Horizontal() || is3Vertical() || is3Diagonal();
+            }
+            is3Horizontal() {
+                if (this.grid[0][0] == this.grid[0][1] && this.grid[0][1] == this.grid[0][2]) {
+                    return true;
+                } else if (this.grid[1][0] == this.grid[1][1] && this.grid[1][1] == this.grid[1][2]) {
+                    return true;
+                } else if (this.grid[2][0] == this.grid[2][1] && this.grid[2][1] == this.grid[2][2]) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            is3Vertical() {
+                if (this.grid[0][0] == this.grid[1][0] && this.grid[0][0] == this.grid[2][0]) {
+                    return true;
+                } else if (this.grid[0][1] == this.grid[1][1] && this.grid[0][1] == this.grid[2][1]) {
+                    return true;
+                } else if (this.grid[0][2] == this.grid[1][2] && this.grid[0][2] == this.grid[2][2]) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            is3Diagonal() {
+                if (this.grid[0][0] == this.grid[1][1] && this.grid[0][0] == this.grid[2][2]) {
+                    return true;
+                } else if (this.grid[0][2] == this.grid[1][1] && this.grid[0][2] == this.grid[2][0]) {
+                    return true;
+                }
+            }
+            get(x, y) {
+                return this.grid[x][y];
+            }
+            set(x, y, value) {
+                this.grid[x][y] = value;
+                return this.grid[x][y];
+            }
+            print() {
+                console.log(this.grid[0]);
+                console.log(this.grid[1]);
+                console.log(this.grid[2]);
+            }
+        }
+        let tic = new TicTacToe(['X', 'O', 'O', 'O', 'X', 'X', 'O', 'X', 'X']);
+        console.log(tic.is3Diagonal());
+        tic.print();
+    </script>
+</body>
+
+</html>
