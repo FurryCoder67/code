@@ -4,13 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cool</title>
-    <script src="script.js"></script>
+    <title>Brainrot Clicker</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Optional: basic styling for the mute button */
+        #muteBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 9999;
+        }
+    </style>
 </head>
 
 <body>
+    <h1>Brainrot Clicker</h1>
+    <div id="score">Clicks: 0</div>
+    <button id="clicker">Click me!</button>
 
+    <h2>Shop</h2>
+    <div class="shop" id="shop">
+        <!-- Shop items will appear here -->
+    </div>
+
+    <!-- Background music -->
+    <audio id="bgMusic" src="Last Sahur  [Official Video].mp3" loop preload="auto"></audio>
+
+    <!-- Mute/unmute button -->
+    <button id="muteBtn">🔊</button>
+
+    <script>
+        const audio = document.getElementById("bgMusic");
+        const muteBtn = document.getElementById("muteBtn");
+
+        // Start music after first click anywhere
+        function startMusic() {
+            window.removeEventListener("click", startMusic);
+            audio.volume = 0.5;
+            audio.play().catch(() => {
+                console.log("Autoplay blocked until interaction.");
+            });
+        }
+        window.addEventListener("click", startMusic, { once: true });
+
+        // Mute/Unmute button functionality
+        muteBtn.addEventListener("click", () => {
+            audio.muted = !audio.muted;
+            muteBtn.textContent = audio.muted ? "🔇" : "🔊";
+        });
+    </script>
+
+    <!-- Your existing game script -->
+    <script src="script.js"></script>
 </body>
 
 </html>
