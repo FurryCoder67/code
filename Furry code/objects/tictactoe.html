@@ -26,6 +26,13 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        .button {
+            background-color: chartreuse;
+            padding: auto;
+            font: oblique;
+            font-weight: 700;
+        }
     </style>
 </head>
 
@@ -47,7 +54,6 @@
 
 
     <script>
-        // TicTacToe class
         class TicTacToe {
             constructor() {
                 this.grid = [];
@@ -66,26 +72,21 @@
             set(x, y, value) {
                 this.grid[x][y] = value;
             }
-
-            // Check if game is won
             isGameWon() {
-                // Check rows
                 for (let i = 0; i < 3; i++) {
-                    if (this.grid[i][0] && this.grid[i][0] === this.grid[i][1] && this.grid[i][1] === this.grid[i][2]) {
+                    if (this.grid[i][0] && this.grid[i][0] == this.grid[i][1] && this.grid[i][1] == this.grid[i][2]) {
                         return true;
                     }
                 }
-                // Check columns
                 for (let i = 0; i < 3; i++) {
-                    if (this.grid[0][i] && this.grid[0][i] === this.grid[1][i] && this.grid[1][i] === this.grid[2][i]) {
+                    if (this.grid[0][i] && this.grid[0][i] == this.grid[1][i] && this.grid[1][i] == this.grid[2][i]) {
                         return true;
                     }
                 }
-                // Check diagonals
-                if (this.grid[0][0] && this.grid[0][0] === this.grid[1][1] && this.grid[1][1] === this.grid[2][2]) {
+                if (this.grid[0][0] && this.grid[0][0] == this.grid[1][1] && this.grid[1][1] == this.grid[2][2]) {
                     return true;
                 }
-                if (this.grid[0][2] && this.grid[0][2] === this.grid[1][1] && this.grid[1][1] === this.grid[2][0]) {
+                if (this.grid[0][2] && this.grid[0][2] == this.grid[1][1] && this.grid[1][1] == this.grid[2][0]) {
                     return true;
                 }
                 return false;
@@ -139,7 +140,7 @@
         }
         updateBoard();
     </script>
-    <button onclick="newGame()">New Game</button>
+    <button onclick="newGame()" class="button">New Game</button>
 </body>
 
 </html>
