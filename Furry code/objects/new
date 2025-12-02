@@ -9,10 +9,10 @@ class BallTrajectory {
             }
         }
     }
-    findValue(graph, value) {
+    findValue(graph, number) {
         for (let r = 0; r < graph.length; r++) {
             for (let c = 0; c < graph[r].length; c++) {
-                if (graph[r][c] == value) {
+                if (graph[r][c] == number) {
                     return [r, c];
                 }
             }
