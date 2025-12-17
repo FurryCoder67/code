@@ -1,4 +1,5 @@
 let clicks = 0;
+let cps = 0;
 
 const shopItems = [
     { name: "Trippi Troppi", cost: 10, cps: 1, img: "/pics/trippitroppi.webp" },
@@ -14,10 +15,13 @@ const shopItems = [
     { name: "Frigo Camelo", cost: 10000000, cps: 1000000, img: "/pics/frigo-camelo.webp" },
     { name: "Divine Cappuccino Assassino", cost: 999999999, cps: 999999999, img: "/pics/300px-Fire_katanas.webp" }
 ];
-let cps = 0;
 
-function renderShop() {
-    const shopDiv = document.getElementById('shop');
+const shopDiv = document.getElementById('shop');
+const scoreDiv = document.getElementById('score');
+const clickBtn = document.getElementById('clicker');
+
+// Render the shop
+const renderShop = () => {
     shopDiv.innerHTML = '';
     shopItems.forEach((item, index) => {
         const itemDiv = document.createElement('div');
@@ -30,32 +34,62 @@ function renderShop() {
         itemDiv.onclick = () => buyItem(index);
         shopDiv.appendChild(itemDiv);
     });
-}
-
-document.getElementById('clicker').onclick = () => {
-    clicks++;
-    updateScore();
 };
 
-function updateScore() {
-    document.getElementById('score').innerText = `Clicks: ${clicks}`;
-}
-function buyItem(index) {
+// Update clicks and CPS display
+const updateScore = () => {
+    scoreDiv.innerText = `Clicks: ${clicks} | CPS: ${cps}`;
+};
+
+// Buy item
+const buyItem = (index) => {
     const item = shopItems[index];
     if (clicks >= item.cost) {
         clicks -= item.cost;
         cps += item.cps;
-        item.cost = Math.floor(item.cost * 1.5); // increase cost for next purchase
+        item.cost = Math.floor(item.cost * 1.5); // increase cost
         updateScore();
         renderShop();
+        saveGame();
     } else {
         alert("Not enough clicks!");
     }
-}
+};
 
+// Click button
+clickBtn.onclick = () => {
+    clicks++;
+    updateScore();
+    saveGame();
+};
+
+// Auto CPS every second
 setInterval(() => {
     clicks += cps;
     updateScore();
+    saveGame();
 }, 1000);
 
+// Save/load game with cookies
+function saveGame() {
+    document.cookie = "clicks=" + clicks + "; path=/; max-age=" + 60 * 60 * 24 * 30;
+    document.cookie = "cps=" + cps + "; path=/; max-age=" + 60 * 60 * 24 * 30;
+}
+
+function loadGame() {
+    const allCookies = document.cookie.split(';');
+    for (let i = 0; i < allCookies.length; i++) {
+        const cookie = allCookies[i].trim();
+        if (cookie.indexOf("clicks=") === 0) {
+            clicks = parseInt(cookie.substring("clicks=".length));
+        }
+        if (cookie.indexOf("cps=") === 0) {
+            cps = parseInt(cookie.substring("cps=".length));
+        }
+    }
+}
+
+// Initialize
+loadGame();
+updateScore();
 renderShop();
