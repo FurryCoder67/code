@@ -2,14 +2,13 @@
     "manifest_version": 3,
     "name": "Brainrot Clicker",
     "version": "1.0",
-    "description": "A simple clicker game with CPS and shop.",
+    "description": "Clicker game that keeps running!",
     "action": {
-        "default_popup": "index.html",
-        "default_icon": {
-            "16": "pics/extensionclicker.png",
-            "48": "pics/extensionclicker.png",
-            "128": "pics/extensionclicker.png"
-        }
+        "default_popup": "popup.html",
+        "default_title": "Brainrot Clicker"
+    },
+    "background": {
+        "service_worker": "background.js"
     },
     "permissions": [
         "storage"
