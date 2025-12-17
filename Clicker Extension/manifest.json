@@ -2,15 +2,35 @@
     "manifest_version": 3,
     "name": "Brainrot Clicker",
     "version": "1.0",
-    "description": "Clicker game that keeps running!",
+    "description": "Clicker game running in the background",
     "action": {
         "default_popup": "index.html",
-        "default_title": "Brainrot Clicker"
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png"
+        }
     },
     "background": {
         "service_worker": "background.js"
     },
     "permissions": [
-        "storage"
+        "storage",
+        "alarms"
+    ],
+    "icons": {
+        "16": "pics/extensionclicker.png",
+        "48": "pics/extensionclicker.png",
+        "128": "pics/extensionclicker.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "pics/*.webp"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
     ]
 }
