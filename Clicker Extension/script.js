@@ -13,7 +13,8 @@ const shopItems = [
     { name: "Liri Liri Larila", cost: 100000, cps: 5000, img: "/pics/Lirili_Larila.jpeg.jpeg" },
     { name: "Lavaka Saturno Saturnita", cost: 500000, cps: 10000, img: "/pics/lavakasuturnosaturnita.jpg" },
     { name: "Frigo Camelo", cost: 10000000, cps: 1000000, img: "/pics/frigo-camelo.webp" },
-    { name: "Divine Cappuccino Assassino", cost: 999999999, cps: 999999999, img: "/pics/300px-Fire_katanas.webp" }
+    { name: "Bombombini Gusini", cost: 10000000000, cps: 10000000, img: "/pics/bombinigusuini.webp" },
+    { name: "Divine Cappuccino Assassino", cost: 99999999999999999999999, cps: 9999999999999999, img: "/pics/300px-Fire_katanas.webp" }
 ];
 
 const shopDiv = document.getElementById('shop');
