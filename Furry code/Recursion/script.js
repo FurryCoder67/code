@@ -42,16 +42,29 @@ function findMax(arr) {
 const nums = [1, 3, 5, 7, 8, 6, 4, 9, 3];
 //console.log(findMax(nums));
 
+/----------------------/
+
 function reverseString(str) {
     if (str.length === 0) return "";
-    nextStr = str[0];
+    return str[str.length - 1] + reverseString(str.slice(0, str.length - 1));
 }
 
-function reverseStr(str) {
-    let newstr = "";
-    for (let i = str.length; i > 0; i--) {
-        newstr += str[i];
+//console.log(reverseString("hello world!"));
+
+/----------------------/
+
+const isArray = (arg) => {
+    return arg.length > 1;
+};
+
+function countNested(nestedArr) {
+    if (nestedArr.length === 0) {
+        return 0;
     }
-    return newstr;
+    if (Array.isArray(nestedArr[0])) {
+        return countNested(nestedArr[0]) + countNested(nestedArr.slice(1));
+    }
+    return countNested(nestedArr.slice(1)) + 1;
 }
-reverseStr("hello person");
+const nestedArr = [[3, 2, 1], 3, [8, 4], 2, 9, [3, 4]];
+console.log(countNested(nestedArr));

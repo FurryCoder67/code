@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elevator Simulator</title>
+</head>
+
+<body>
+    <h1>Elevator</h1>
+    <br />
+    <canvas id="canvas" width="1000" height="500" style="border:10px solid grey"></canvas>
+    <br />
+    <script type="module" src="elevator.js"></script>
+    <script>
+        const canvas = document.getElementById(canvas);
+        function run() {
+            const sim = new Sim(3, 3, 3, canvas);
+        }
+    </script>
+    <br />
+    <button onclick="run()">CLICK HERE</button>
+</body>
+
+</html>

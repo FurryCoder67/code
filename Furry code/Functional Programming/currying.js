@@ -57,4 +57,12 @@ const sum = (x) => {
 };
 
 const aSum = sum(1)(2)(3)(4)(5)(6)(7)(8)(9)(10);
-console.log(aSum);
+/* console.log(aSum); */
+
+
+// Has Property Checker
+
+function hasProperty(obj, property) {
+    return obj[property] != undefined;
+}
+console.log(hasProperty({ name: "Bug", age: 67 }, "name"));
