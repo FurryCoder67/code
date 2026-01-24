@@ -3,24 +3,18 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elevator Simulator</title>
 </head>
 
 <body>
-    <h1>Elevator</h1>
+    <h1>Elevator Simulator</h1>
+
+    <canvas id="canvas" width="600" height="400" style="border:2px solid grey"></canvas>
     <br />
-    <canvas id="canvas" width="1000" height="500" style="border:10px solid grey"></canvas>
-    <br />
-    <script type="module" src="elevator.js"></script>
-    <script>
-        const canvas = document.getElementById(canvas);
-        function run() {
-            const sim = new Sim(3, 3, 3, canvas);
-        }
-    </script>
-    <br />
+
     <button onclick="run()">CLICK HERE</button>
+
+    <script type="module" src="./js/elevator.js"></script>
 </body>
 
 </html>

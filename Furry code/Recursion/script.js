@@ -67,4 +67,42 @@ function countNested(nestedArr) {
     return countNested(nestedArr.slice(1)) + 1;
 }
 const nestedArr = [[3, 2, 1], 3, [8, 4], 2, 9, [3, 4]];
-console.log(countNested(nestedArr));
+//console.log(countNested(nestedArr));
+
+/----------------------/
+
+const countDown = (n) => {
+    if (n === 0) {
+        return 0;
+    }
+    console.log(n);
+    countDown(n - 1);
+};
+
+//countDown(5);
+
+/----------------------/
+
+const power = (n, e) => {
+    if (e === 1) {
+        return n;
+    }
+    return n * power(n, e - 1);
+};
+//console.log(power(3, 3));
+
+/----------------------/
+
+const isPalindrome = (s) => {
+    if (s.length === 2) {
+        return s[0] === s[1];
+    } else if (s.length === 1) {
+        return true;
+    } else if (s[0] === s[s.length - 1]) {
+        return isPalindrome(s.slice(1, -1));;
+    } else {
+        return false;
+    }
+};
+
+console.log(isPalindrome("abccba"));
