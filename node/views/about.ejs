@@ -1,39 +1,29 @@
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Site | <%= title %>
-    </title>
-</head>
+<%- include('./partials/head.ejs') %>
 
-<body>
+    <body>
 
-    <nav>
-        <div class="site-title">
-            <a href="/">
-                <h1>Blog Site</h1>
-            </a>
-            <p>A Blog Site</p>
-        </div>
-        <ul>
-            <li><a href="/">Blogs</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/blogs/create">New Blog</a></li>
-        </ul>
-    </nav>
+        <%- include('./partials/nav.ejs') %>
 
-    <div class="about content">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus provident deserunt cupiditate iste,
-            minuseveniet, fugiat corporis facilis culpa sed beatae praesentium ratione accusamus. Itaque maxime natus
-            illum voluptate quos!</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus provident deserunt cupiditate iste,
-            minuseveniet, fugiat corporis facilis culpa sed beatae praesentium ratione accusamus. Itaque maxime natus
-            illum voluptatequos!</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus provident deserunt cupiditate iste,
-            minuseveniet, fugiat corporis facilis culpa sed beatae praesentium ratione accusamus. Itaque maxime natus
-            illum voluptatequos!</p>
-    </div>
-</body>
+            <div class="about content">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus provident deserunt cupiditate
+                    iste,
+                    minuseveniet, fugiat corporis facilis culpa sed beatae praesentium ratione accusamus. Itaque maxime
+                    natus
+                    illum voluptate quos!</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus provident deserunt cupiditate
+                    iste,
+                    minuseveniet, fugiat corporis facilis culpa sed beatae praesentium ratione accusamus. Itaque maxime
+                    natus
+                    illum voluptatequos!</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus provident deserunt cupiditate
+                    iste,
+                    minuseveniet, fugiat corporis facilis culpa sed beatae praesentium ratione accusamus. Itaque maxime
+                    natus
+                    illum voluptatequos!</p>
+            </div>
+            <%- include('./partials/footer.ejs') %>
+    </body>
 
 </html>
