@@ -61,7 +61,6 @@ const flattenArray = (acc, curr) => {
 };
 const flattened = nestedArr.reduce(flattenArray, []);
 //console.log(`Flattened array is: [${flattened}]`);
-
 // Group By Age
 
 const groupByAge = (acc, curr) => {
@@ -100,5 +99,5 @@ const doubledArray = array.reduce(doubleNumber, []);
 
 // Pipeline Fn
 const fns = [x => x + 1, x => x * 2, x => x - 3];
-const pipeline = fns.reduce((acc, curr) => { return curr(acc); }, 5);
+const pipeline = fns.reduce((acc, curr) => curr(acc), 5);
 console.log(pipeline);

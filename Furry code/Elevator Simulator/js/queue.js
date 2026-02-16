@@ -1,5 +1,3 @@
-import { Person } from "./elevator.js";
-
 export class Queue {
     constructor() {
         this.arr = [];
@@ -9,15 +7,10 @@ export class Queue {
         return this.arr;
     }
     dequeue() {
-        if (!this.arr.isEmpty()) {
-            return this.arr.shift();
-        } else {
-            return null;
-        }
+        return !this.isEmpty() ? this.arr.shift() : null;
     }
     peek() {
-        if (!this.arr.isEmpty()) return this.arr[0];
-        return null;
+        return !this.isEmpty() ? this.arr[0] : null;
     }
     isEmpty() {
         return this.arr.length === 0;
@@ -28,31 +21,25 @@ export class Queue {
 }
 export class FloorQueue extends Queue {
     dequeueUp(floor) {
-        const i = this.people.findIndex(p => p.destinationFloor > floor);
-        if (i >= 0) {
-            return this.people.splice(i, 1)[0]
-        } else {
-            return null;
-        }
+        if (this.isEmpty()) return null;
+        const i = this.arr.findIndex(p => p.destinationFloor > floor);
+        return i >= 0 ? this.arr.splice(i, 1)[0] : null;
     }
-
     dequeueDown(floor) {
-        const i = this.people.findIndex(p => p.destinationFloor < floor);
-        if (i >= 0) {
-            return this.people.splice(i, 1)[0]
-        } else {
-            return null;
-        }
+        if (this.isEmpty()) return null;
+        const i = this.arr.findIndex(p => p.destinationFloor < floor);
+        return i >= 0 ? this.arr.splice(i, 1)[0] : null;
     }
 }
 
 export class ElevatorQueue extends Queue {
+    constructor(people) {
+        super();
+        this.people = people;
+    }
     dequeueAtFloor(floor) {
+        console.log(typeof (this.people));
         const i = this.people.findIndex(p => p.destinationFloor === floor);
-        if (i >= 0) {
-            return this.people.splice(i, 1)[0];
-        } else {
-            return null;
-        }
+        return i >= 0 ? this.people.splice(i, 1)[0] : null;
     }
 }

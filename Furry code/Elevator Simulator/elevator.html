@@ -12,9 +12,24 @@
     <canvas id="canvas" width="600" height="400" style="border:2px solid grey"></canvas>
     <br />
 
-    <button onclick="run()">CLICK HERE</button>
+    <button id="runBtn" onclick="run()">Start sim C;</button>
 
-    <script type="module" src="./js/elevator.js"></script>
+    <script type="module">
+        import { Simulation } from './js/elevator.js';
+        let sim;
+        let isRunning = false;
+
+        function run() {
+            const btn = document.getElementById('runBtn');
+            if (!sim) {
+                sim = new Simulation(2, 3, 1, document.getElementById('canvas'));
+            }
+            sim.toggleRun();
+            isRunning = !isRunning;
+            btn.textContent = isRunning ? 'Pause' : 'Resume';
+        }
+        window.run = run;
+    </script>
 </body>
 
 </html>
