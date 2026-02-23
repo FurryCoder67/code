@@ -6,11 +6,14 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "scripting"
+    "scripting",
+    "downloads"
   ],
   "host_permissions": [
     "https://www.youtube.com/*",
-    "https://youtubei.googleapis.com/*"
+    "https://youtubei.googleapis.com/*",
+    "http://localhost:9999/*",
+    "http://127.0.0.1:9999/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -25,15 +28,23 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
-      "js": ["content.js"],
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["ffmpeg/*.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "ffmpeg/*.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }

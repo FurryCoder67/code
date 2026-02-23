@@ -126,6 +126,7 @@ function runDownload(jobId, url, format, quality, playlist) {
       '--extract-audio',
       '--audio-format', 'mp3',
       '--audio-quality', bitrate + 'K',
+      '--extractor-args', 'youtube:player_client=ios,web',
       '--output', outputTemplate,
       '--newline'
     ];
@@ -137,6 +138,7 @@ function runDownload(jobId, url, format, quality, playlist) {
     args = [
       '--format', formatStr,
       '--merge-output-format', 'mp4',
+      '--extractor-args', 'youtube:player_client=ios,web',
       '--output', outputTemplate,
       '--newline'
     ];
@@ -267,13 +269,24 @@ function runDownload(jobId, url, format, quality, playlist) {
 }
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`
-╔══════════════════════════════════════╗
-║        YT Grab Companion App         ║
-╠══════════════════════════════════════╣
-║  Running on: http://localhost:${PORT}║
-║  Output dir: ~/Desktop/YTGrab        ║
-╚══════════════════════════════════════╝
-  `);
+const server = app.listen(PORT, () => {
+  const addr = server.address();
+  const host = (addr && addr.address) ? addr.address : 'localhost';
+  const port = (addr && addr.port) ? addr.port : PORT;
+  console.log(`\n╔══════════════════════════════════════╗\n║        YT Grab Companion App         ║\n╠══════════════════════════════════════╣\n║  Running on: http://${host}:${port}   ║\n║  Output dir: ${OUTPUT_DIR}        ║\n╚══════════════════════════════════════╝\n`);
+});
+
+server.on('error', (err) => {
+  if (err && err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use. Another instance may be running.\n` +
+      `If this is unexpected, stop the other process or choose a different port.`);
+  } else {
+    console.error('Server error:', err && err.message ? err.message : err);
+  }
+  process.exit(1);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err && err.stack ? err.stack : err);
+  process.exit(1);
 });

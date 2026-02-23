@@ -3,7 +3,11 @@
 
 const NATIVE_HOST = 'com.ytgrab.helper';
 // Fallback: local HTTP bridge on port 9999 (see companion app)
-const LOCAL_BRIDGE = 'http://localhost:9999';
+const LOCAL_BRIDGES = [
+  'http://localhost:9999',
+  'http://127.0.0.1:9999',
+  'http://[::1]:9999'
+];
 
 let currentFormat = 'mp3';
 let currentQuality = 'best';
@@ -12,20 +16,20 @@ let currentVideoInfo = null;
 let playlistMode = false;
 
 // ─── UI refs ─────────────────────────────────────────────────────────────────
-const videoCard       = document.getElementById('videoCard');
-const notYt           = document.getElementById('notYt');
-const videoTitle      = document.getElementById('videoTitle');
-const videoMeta       = document.getElementById('videoMeta');
-const videoThumb      = document.getElementById('videoThumb');
-const dlBtn           = document.getElementById('dlBtn');
-const dlBtnText       = document.getElementById('dlBtnText');
-const progressSec     = document.getElementById('progressSection');
-const progressFill    = document.getElementById('progressFill');
-const progressLbl     = document.getElementById('progressLabel');
-const statusMsg       = document.getElementById('statusMsg');
-const qualityRow      = document.getElementById('qualityRow');
-const playlistToggle  = document.getElementById('playlistToggle');
-const playlistNote    = document.getElementById('playlistNote');
+const videoCard = document.getElementById('videoCard');
+const notYt = document.getElementById('notYt');
+const videoTitle = document.getElementById('videoTitle');
+const videoMeta = document.getElementById('videoMeta');
+const videoThumb = document.getElementById('videoThumb');
+const dlBtn = document.getElementById('dlBtn');
+const dlBtnText = document.getElementById('dlBtnText');
+const progressSec = document.getElementById('progressSection');
+const progressFill = document.getElementById('progressFill');
+const progressLbl = document.getElementById('progressLabel');
+const statusMsg = document.getElementById('statusMsg');
+const qualityRow = document.getElementById('qualityRow');
+const playlistToggle = document.getElementById('playlistToggle');
+const playlistNote = document.getElementById('playlistNote');
 
 // ─── Playlist toggle ──────────────────────────────────────────────────────────
 playlistToggle.addEventListener('change', () => {
@@ -44,7 +48,7 @@ async function init() {
     if (!url.hostname.includes('youtube.com')) return showNotYt();
 
     const videoId = url.searchParams.get('v');
-    const listId  = url.searchParams.get('list');
+    const listId = url.searchParams.get('list');
 
     if (!videoId && !listId) return showNotYt('Navigate to a specific YouTube video or playlist.');
 
@@ -92,7 +96,7 @@ async function loadVideoInfo(tabId, videoId) {
 function renderVideoCard(info, videoId) {
   videoCard.classList.add('visible');
   videoTitle.textContent = info.title || 'Unknown Title';
-  videoMeta.textContent  = [info.author, info.duration].filter(Boolean).join(' · ') || videoId;
+  videoMeta.textContent = [info.author, info.duration].filter(Boolean).join(' · ') || videoId;
   videoThumb.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
   videoThumb.onerror = () => { videoThumb.style.display = 'none'; };
 }
@@ -115,8 +119,8 @@ function extractVideoInfo() {
     const m = Math.floor(s / 60);
     const sec = s % 60;
     const h = Math.floor(m / 60);
-    if (h > 0) return `${h}:${String(m % 60).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-    return `${m}:${String(sec).padStart(2,'0')}`;
+    if (h > 0) return `${h}:${String(m % 60).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    return `${m}:${String(sec).padStart(2, '0')}`;
   }
 }
 
@@ -172,7 +176,7 @@ async function startDownload() {
     // Try local HTTP bridge first (easier to set up than native messaging)
     await downloadViaBridge(videoUrl);
   } catch (e) {
-    showStatus('error', `Error: ${e.message}. Is the YT Grab companion app running?`);
+    showStatus('error', `Error: ${e.message} Is the YT Grab companion app running?`);
     showProgress(false);
     dlBtn.disabled = false;
   }
@@ -192,24 +196,30 @@ async function downloadViaBridge(videoUrl) {
     title: currentVideoInfo?.title || currentVideoId
   };
 
-  let response;
-  try {
-    response = await fetch(`${LOCAL_BRIDGE}/download`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-  } catch (e) {
-    throw new Error('Cannot reach local helper. Make sure the YT Grab app is running on port 9999.');
+  let lastErr = null;
+  for (const base of LOCAL_BRIDGES) {
+    try {
+      const response = await fetch(`${base}/download`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err || 'Download failed');
+      }
+
+      const { jobId } = await response.json();
+      return await pollProgress(jobId);
+    } catch (e) {
+      lastErr = e;
+      // try next address
+      continue;
+    }
   }
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(err || 'Download failed');
-  }
-
-  const { jobId } = await response.json();
-  await pollProgress(jobId);
+  throw new Error('Cannot reach local helper (port 9999)');
 }
 
 async function pollProgress(jobId) {
