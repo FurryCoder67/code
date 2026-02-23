@@ -13,8 +13,8 @@ export class Person {
         this.destinationFloor = destinationFloor;
     }
 
-    equals(otherperson) {
-        return otherperson && this.name === otherperson.name;
+    equals(otherPerson) {
+        return otherPerson && this.name === otherPerson.name;
     }
 }
 
@@ -38,11 +38,13 @@ export class Floor {
         for (let i = 0; i < this.queue.arr.length; i++) {
             const p = this.queue.arr[i];
 
-            if (p.destinationFloor > this.floorNumber)
+            if (p.destinationFloor > this.floorNumber) {
                 this.upButtonPressed = true;
+            }
 
-            if (p.destinationFloor < this.floorNumber)
+            if (p.destinationFloor < this.floorNumber) {
                 this.downButtonPressed = true;
+            }
         }
     }
 }
@@ -52,7 +54,7 @@ export class Elevator {
     constructor(capacity, floors, people = []) {
         this.capacity = capacity;
         this.floors = floors;
-        this.queue = new ElevatorQueue(people);
+        this.queue = new ElevatorQueue(people || []);
         this.currentFloor = 0;
         this.destinationFloor = null;
     }
@@ -62,25 +64,42 @@ export class Elevator {
     }
 
     getNextDirection() {
-        if (this.destinationFloor === null) return null;
-        return this.destinationFloor > this.currentFloor
-            ? DIRECTION.UP
-            : DIRECTION.DOWN;
+        if (this.destinationFloor === null) {
+            return null;
+        }
+
+        if (this.destinationFloor > this.currentFloor) {
+            return DIRECTION.UP;
+        }
+
+        if (this.destinationFloor < this.currentFloor) {
+            return DIRECTION.DOWN;
+        }
+
+        return null;
     }
 
     move() {
-        if (this.destinationFloor === null) return false;
-        if (this.currentFloor === this.destinationFloor) return false;
+        if (this.destinationFloor === null) {
+            return false;
+        }
 
-        if (this.getNextDirection() === DIRECTION.UP)
+        if (this.currentFloor === this.destinationFloor) {
+            return false;
+        }
+
+        if (this.getNextDirection() === DIRECTION.UP) {
             this.currentFloor++;
-        else
+        } else {
             this.currentFloor--;
+        }
+
         return true;
     }
 
     unloadPeople() {
-        while (this.queue.dequeueAtFloor(this.currentFloor)) { }
+        while (this.queue.dequeueAtFloor(this.currentFloor)) {
+        }
     }
 
     loadPeople() {
@@ -89,29 +108,42 @@ export class Elevator {
         let dir = this.getNextDirection();
 
         if (!dir) {
-            if (floor.upButtonPressed) dir = DIRECTION.UP;
-            else if (floor.downButtonPressed) dir = DIRECTION.DOWN;
-            else return;
+            if (floor.upButtonPressed) {
+                dir = DIRECTION.UP;
+            } else if (floor.downButtonPressed) {
+                dir = DIRECTION.DOWN;
+            } else {
+                return;
+            }
         }
 
         while (!this.isFull()) {
-            let person =
-                dir === DIRECTION.UP
-                    ? floor.queue.dequeueUp(this.currentFloor)
-                    : floor.queue.dequeueDown(this.currentFloor);
+            let person;
 
-            if (!person) break;
+            if (dir === DIRECTION.UP) {
+                person = floor.queue.dequeueUp(this.currentFloor);
+            } else {
+                person = floor.queue.dequeueDown(this.currentFloor);
+            }
+
+            if (!person) {
+                break;
+            }
 
             this.queue.enqueue(person);
         }
     }
 
     getNextDestinationFloor() {
-        if (!this.queue.isEmpty())
+        // If elevator has passengers
+        if (!this.queue.isEmpty()) {
             return this.queue.peek().destinationFloor;
+        }
 
+        // Otherwise check floors
         for (let i = 0; i < this.floors.length; i++) {
             const floor = this.floors[i];
+
             if (floor.upButtonPressed || floor.downButtonPressed) {
                 return floor.floorNumber;
             }
@@ -129,37 +161,25 @@ export class Elevator {
     }
 }
 
-// ===== RegularElevator =====
-class RegularElevator extends Elevator {
-    constructor(capacity, floors) {
-        super(capacity, floors, []);
-
-        const babyJack = new Person("Baby Jack", 0, 1);
-        const Bob = new Person("Bob", 3, 0);
-        const Charlie = new Person("Charlie", 0, 1);
-
-        this.queue = new ElevatorQueue([babyJack, Bob, Charlie]);
-        this.currentFloor = 0;
-        this.destinationFloor = null;
-    }
-}
-
 // ===== Building =====
 export class Building {
     constructor(numElevators, numFloors, people = []) {
         this.floors = [];
         this.elevators = [];
 
-        for (let i = 0; i < numFloors; i++)
+        for (let i = 0; i < numFloors; i++) {
             this.floors.push(new Floor(i));
+        }
 
-        for (let i = 0; i < numElevators; i++)
+        for (let i = 0; i < numElevators; i++) {
             this.elevators.push(new Elevator(4, this.floors, people));
+        }
     }
 
     moveElevatorsAndLoad() {
-        for (let i = 0; i < this.elevators.length; i++)
+        for (let i = 0; i < this.elevators.length; i++) {
             this.elevators[i].moveAndLoad();
+        }
     }
 
     generatePeopleRandomly(n) {
@@ -167,8 +187,9 @@ export class Building {
             let from = Math.floor(Math.random() * this.floors.length);
             let to = from;
 
-            while (to === from)
+            while (to === from) {
                 to = Math.floor(Math.random() * this.floors.length);
+            }
 
             const p = new Person(
                 String.fromCharCode(97 + Math.floor(Math.random() * 26)),
@@ -188,8 +209,6 @@ export class Simulation {
         this.numFloors = numFloors;
         this.peoplePerSecond = peoplePerSecond;
         this.canvas = canvas;
-        this.ctx = canvas.getContext("2d");
-
         this.timer = 0;
         this.isRunning = false;
         this.intervalId = null;
@@ -204,18 +223,22 @@ export class Simulation {
 
     step() {
         this.timer++;
-
         this.building.generatePeopleRandomly(this.peoplePerSecond);
-
         for (let i = 0; i < this.building.floors.length; i++) {
             this.building.floors[i].pressButtons();
         }
         this.building.moveElevatorsAndLoad();
-        this.animateCanvas();
-        console.log(`NEXT STEP!!!!!!!!!!!!!!`);
-        console.log(`Number of elevators: ${this.building.numElevators}`);
+        console.clear();
+        console.log("Timer:", this.timer);
+        for (let i = 0; i < this.building.elevators.length; i++) {
+            const currentElevator = this.building.elevators[i];
+            console.log("Elevator Number: " + i, "Floor:", currentElevator.currentFloor, "People:", currentElevator.queue.size(), "Destination:", currentElevator.destinationFloor ?? "None", "Direction:", currentElevator.getNextDirection() === 100 ? "Up" : currentElevator.getNextDirection() === 200 ? "Down" : "Idle");
+        }
+        for (let i = 0; i < this.building.floors.length; i++) {
+            const currentFloor = this.building.floors[i];
+            console.log("Floor Number: " + i, "Waiting People: ", currentFloor.queue.size(), "Up: ", currentFloor.upButtonPressed, "Down: ", currentFloor.downButtonPressed);
+        }
     }
-
     toggleRun() {
         if (this.isRunning) {
             clearInterval(this.intervalId);
@@ -227,103 +250,5 @@ export class Simulation {
 
             this.isRunning = true;
         }
-        console.log(`isRunning: ${this.isRunning}`);
-    }
-
-    animateCanvas() {
-
     }
 }
-
-// ========= Testing =========
-class Test {
-
-    testQueue() {
-        const q = new Queue();
-
-        console.assert(q.isEmpty() === true);
-        q.enqueue(5);
-        console.assert(q.size() === 1);
-        console.assert(q.peek() === 5);
-        console.assert(q.dequeue() === 5);
-        console.assert(q.isEmpty() === true);
-    }
-
-    testFloorButtons() {
-        const floor = new Floor(2);
-
-        floor.addPerson(new Person("A", 2, 5));
-        floor.addPerson(new Person("B", 2, 1));
-
-        floor.pressButtons();
-
-        console.assert(floor.upButtonPressed === true);
-        console.assert(floor.downButtonPressed === true);
-    }
-
-    testElevatorMovement() {
-        const floors = [new Floor(0), new Floor(1), new Floor(2)];
-        const elevator = new Elevator(4, floors);
-
-        elevator.destinationFloor = 2;
-
-        elevator.move();
-        console.assert(elevator.currentFloor === 1);
-
-        elevator.move();
-        console.assert(elevator.currentFloor === 2);
-
-        console.assert(elevator.move() === false);
-    }
-
-    testElevatorLoadUnload() {
-        const floors = [new Floor(0), new Floor(1), new Floor(2)];
-        const elevator = new Elevator(4, floors);
-
-        const p = new Person("A", 0, 2);
-
-        floors[0].addPerson(p);
-        floors[0].pressButtons();
-
-        elevator.destinationFloor = 0;
-        elevator.loadPeople();
-
-        console.assert(elevator.queue.size() === 1);
-
-        elevator.currentFloor = 2;
-        elevator.unloadPeople();
-
-        console.assert(elevator.queue.isEmpty() === true);
-    }
-
-    testBuilding() {
-        const building = new Building(3, 5);
-
-        console.assert(building.elevators.length === 3);
-        console.assert(building.floors.length === 5);
-    }
-
-    testSimulationStep() {
-        const canvas = document.createElement("canvas");
-        const sim = new Simulation(1, 3, 0, canvas);
-
-        const before = sim.timer;
-        sim.step();
-        const after = sim.timer;
-
-        console.assert(after === before + 1);
-    }
-
-    testAll() {
-        this.testQueue();
-        this.testFloorButtons();
-        this.testElevatorMovement();
-        this.testElevatorLoadUnload();
-        this.testBuilding();
-        this.testSimulationStep();
-        console.log("All tests passed");
-    }
-}
-
-const test = new Test();
-// test.testAll();

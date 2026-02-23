@@ -33,13 +33,16 @@ export class FloorQueue extends Queue {
 }
 
 export class ElevatorQueue extends Queue {
-    constructor(people) {
+    constructor(people = []) {
         super();
-        this.people = people;
+        this.arr = people;
     }
     dequeueAtFloor(floor) {
-        console.log(typeof (this.people));
-        const i = this.people.findIndex(p => p.destinationFloor === floor);
-        return i >= 0 ? this.people.splice(i, 1)[0] : null;
+        if (this.isEmpty()) return null;
+        const i = this.arr.findIndex(p => p.destinationFloor === floor);
+        if (i >= 0) {
+            return this.arr.splice(i, 1)[0];
+        }
+        return null;
     }
 }
