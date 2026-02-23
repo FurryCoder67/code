@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YT Grab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     :root {
       --red: #FF2D2D;
@@ -21,11 +19,7 @@
       --yellow: #FFE033;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       width: 360px;
@@ -42,11 +36,13 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(0deg,
-          transparent,
-          transparent 2px,
-          rgba(0, 0, 0, 0.08) 2px,
-          rgba(0, 0, 0, 0.08) 4px);
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
       pointer-events: none;
       z-index: 100;
     }
@@ -112,15 +108,12 @@
       display: none;
     }
 
-    .video-card.visible {
-      display: block;
-    }
+    .video-card.visible { display: block; }
 
     .video-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 3px;
       height: 100%;
       background: var(--red);
@@ -163,22 +156,9 @@
       display: none;
     }
 
-    .not-yt.visible {
-      display: block;
-    }
-
-    .not-yt p {
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .not-yt strong {
-      color: var(--yellow);
-      display: block;
-      margin-bottom: 6px;
-      font-size: 12px;
-    }
+    .not-yt.visible { display: block; }
+    .not-yt p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+    .not-yt strong { color: var(--yellow); display: block; margin-bottom: 6px; font-size: 12px; }
 
     /* Format selector */
     .section-label {
@@ -214,32 +194,22 @@
     .format-btn::after {
       content: '';
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
       background: var(--red);
       transition: width 0.2s;
     }
 
-    .format-btn:hover {
-      border-color: var(--muted);
-      color: var(--text);
-    }
-
-    .format-btn:hover::after {
-      width: 100%;
-    }
+    .format-btn:hover { border-color: var(--muted); color: var(--text); }
+    .format-btn:hover::after { width: 100%; }
 
     .format-btn.active {
       border-color: var(--red);
       color: var(--text);
-      background: rgba(255, 45, 45, 0.08);
+      background: rgba(255,45,45,0.08);
     }
 
-    .format-btn.active::after {
-      width: 100%;
-    }
+    .format-btn.active::after { width: 100%; }
 
     .format-icon {
       font-size: 20px;
@@ -279,15 +249,8 @@
       letter-spacing: 1px;
     }
 
-    .quality-chip:hover {
-      border-color: var(--muted);
-      color: var(--text);
-    }
-
-    .quality-chip.active {
-      border-color: var(--green);
-      color: var(--green);
-    }
+    .quality-chip:hover { border-color: var(--muted); color: var(--text); }
+    .quality-chip.active { border-color: var(--green); color: var(--green); }
 
     /* Download button */
     .dl-btn {
@@ -308,15 +271,8 @@
       clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
     }
 
-    .dl-btn:hover {
-      background: #ff4444;
-      transform: translateY(-1px);
-    }
-
-    .dl-btn:active {
-      transform: translateY(0);
-    }
-
+    .dl-btn:hover { background: #ff4444; transform: translateY(-1px); }
+    .dl-btn:active { transform: translateY(0); }
     .dl-btn:disabled {
       background: var(--border);
       color: var(--muted);
@@ -324,21 +280,14 @@
       transform: none;
     }
 
-    .dl-btn svg {
-      width: 18px;
-      height: 18px;
-      fill: white;
-    }
+    .dl-btn svg { width: 18px; height: 18px; fill: white; }
 
     /* Progress */
     .progress-section {
       margin-top: 14px;
       display: none;
     }
-
-    .progress-section.visible {
-      display: block;
-    }
+    .progress-section.visible { display: block; }
 
     .progress-bar-wrap {
       background: var(--border);
@@ -361,13 +310,8 @@
     }
 
     @keyframes indeterminate {
-      0% {
-        margin-left: -40%;
-      }
-
-      100% {
-        margin-left: 100%;
-      }
+      0% { margin-left: -40%; }
+      100% { margin-left: 100%; }
     }
 
     .progress-text {
@@ -376,9 +320,7 @@
       letter-spacing: 1px;
     }
 
-    .progress-text span {
-      color: var(--green);
-    }
+    .progress-text span { color: var(--green); }
 
     /* Status message */
     .status-msg {
@@ -387,20 +329,13 @@
       padding: 8px 12px;
       border-left: 2px solid var(--green);
       color: var(--green);
-      background: rgba(0, 255, 136, 0.05);
+      background: rgba(0,255,136,0.05);
       display: none;
       letter-spacing: 0.5px;
     }
 
-    .status-msg.visible {
-      display: block;
-    }
-
-    .status-msg.error {
-      color: var(--red);
-      border-color: var(--red);
-      background: rgba(255, 45, 45, 0.05);
-    }
+    .status-msg.visible { display: block; }
+    .status-msg.error { color: var(--red); border-color: var(--red); background: rgba(255,45,45,0.05); }
 
     /* Divider */
     .divider {
@@ -417,27 +352,76 @@
       letter-spacing: 0.3px;
     }
 
-    .howto strong {
-      color: var(--text);
+    .howto strong { color: var(--text); }
+
+    /* Playlist toggle */
+    .playlist-row {
+      margin-bottom: 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
     }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-label input { display: none; }
+
+    .toggle-track {
+      width: 34px;
+      height: 18px;
+      background: var(--border);
+      border-radius: 0;
+      position: relative;
+      flex-shrink: 0;
+      transition: background 0.2s;
+      clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    }
+
+    .toggle-thumb {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 12px; height: 12px;
+      background: var(--muted);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    input:checked ~ .toggle-track { background: rgba(255,45,45,0.2); border: 1px solid var(--red); }
+    input:checked ~ .toggle-track .toggle-thumb { transform: translateX(16px); background: var(--red); }
+
+    .toggle-text {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .toggle-label:has(input:checked) .toggle-text { color: var(--text); }
+
+    .playlist-note {
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 7px;
+      padding-left: 44px;
+      letter-spacing: 0.3px;
+      display: none;
+    }
+
+    .playlist-note.visible { display: block; }
 
     /* Pulse dot */
     @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.3;
-      }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
-
     .live-dot {
       display: inline-block;
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       background: var(--green);
       border-radius: 50%;
       margin-right: 6px;
@@ -445,14 +429,11 @@
     }
   </style>
 </head>
-
 <body>
 
   <div class="header">
     <div class="logo-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
     </div>
     <div class="logo-text">YT<span>GRAB</span></div>
     <div class="header-badge">v1.0</div>
@@ -497,11 +478,23 @@
       <div class="quality-chip" data-quality="360">360p</div>
     </div>
 
+    <!-- Playlist toggle -->
+    <div class="playlist-row" id="playlistRow">
+      <label class="toggle-label">
+        <input type="checkbox" id="playlistToggle" />
+        <span class="toggle-track">
+          <span class="toggle-thumb"></span>
+        </span>
+        <span class="toggle-text">DOWNLOAD ENTIRE PLAYLIST</span>
+      </label>
+      <div class="playlist-note" id="playlistNote">
+        Saves all tracks to a folder · delivered as .zip
+      </div>
+    </div>
+
     <button class="dl-btn" id="dlBtn" disabled>
-      <svg viewBox="0 0 24 24">
-        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-      </svg>
-      GRAB IT
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      <span id="dlBtnText">GRAB IT</span>
     </button>
 
     <!-- Progress -->
@@ -521,13 +514,11 @@
 
     <div class="howto">
       <strong>HOW IT WORKS</strong><br>
-      This extension uses <strong>yt-dlp</strong> running locally on your machine via a small helper app. Install the
-      companion app from the README to enable downloads.
+      This extension uses <strong>yt-dlp</strong> running locally on your machine via a small helper app. Install the companion app from the README to enable downloads.
     </div>
 
   </div>
 
   <script src="popup.js"></script>
 </body>
-
 </html>

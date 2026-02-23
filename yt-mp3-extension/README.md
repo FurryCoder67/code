@@ -8,7 +8,7 @@ Download YouTube videos as **MP3** or **MP4** directly from your browser.
 
 ```
 Chrome Extension (popup.html)
-        ↓  HTTP POST to localhost:9876
+        ↓  HTTP POST to localhost:443
 Companion App (companion.js / Node.js)
         ↓  spawns
 yt-dlp (CLI tool)
@@ -96,7 +96,7 @@ yt-mp3-extension/
 ## Notes
 
 - **Downloads are saved** to `~/Desktop/YTGrab/` by default. Edit `companion.js` to change.
-- **Port 9876** must be free. Change `PORT` in `companion.js` and `LOCAL_BRIDGE` in `popup.js` if needed.
+- **Port 443** must be free. Change `PORT` in `companion.js` and `LOCAL_BRIDGE` in `popup.js` if needed.
 - Downloading YouTube videos may violate YouTube's Terms of Service. Use responsibly for content you have rights to.
 
 ---
