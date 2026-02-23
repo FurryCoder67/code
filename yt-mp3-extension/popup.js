@@ -2,8 +2,8 @@
 // Communicates with a local native helper (yt-dlp) via native messaging
 
 const NATIVE_HOST = 'com.ytgrab.helper';
-// Fallback: local HTTP bridge on port 443 (see companion app)
-const LOCAL_BRIDGE = 'http://localhost:443';
+// Fallback: local HTTP bridge on port 9999 (see companion app)
+const LOCAL_BRIDGE = 'http://localhost:9999';
 
 let currentFormat = 'mp3';
 let currentQuality = 'best';
@@ -179,7 +179,7 @@ async function startDownload() {
 }
 
 async function downloadViaBridge(videoUrl) {
-  // The companion app (see README) runs a tiny local server on port 443
+  // The companion app (see README) runs a tiny local server on port 9999
   // POST /download → streams progress via SSE or polls /status/:id
 
   setProgress(0, 'indeterminate', 'Sending request...');
@@ -200,7 +200,7 @@ async function downloadViaBridge(videoUrl) {
       body: JSON.stringify(payload)
     });
   } catch (e) {
-    throw new Error('Cannot reach local helper. Make sure the YT Grab app is running on port 443.');
+    throw new Error('Cannot reach local helper. Make sure the YT Grab app is running on port 9999.');
   }
 
   if (!response.ok) {

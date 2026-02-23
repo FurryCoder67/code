@@ -4,7 +4,7 @@
 //
 // SETUP:
 //   npm install express cors uuid archiver
-//   sudo node companion.js       ← sudo required for port 443 on Mac/Linux
+//   sudo node companion.js       ← sudo required for port 9999 on Mac/Linux
 //   node companion.js            ← Windows (run terminal as Administrator)
 //
 // REQUIRES: yt-dlp installed and on PATH
@@ -12,23 +12,24 @@
 //   Windows: winget install yt-dlp
 //   Linux:   sudo pip install yt-dlp
 
-const express  = require('express');
-const cors     = require('cors');
+const express = require('express');
+const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const { spawn } = require('child_process');
 const archiver = require('archiver');
-const path     = require('path');
-const fs       = require('fs');
-const os       = require('os');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
-const app  = express();
-const PORT = 443;
+const app = express();
+const PORT = 9999;
 
 // Output folder - Desktop by default
 const OUTPUT_DIR = path.join(os.homedir(), 'Desktop', 'YTGrab');
 if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'] }));
+app.options('*', cors());
 app.use(express.json());
 
 // In-memory job store
@@ -47,7 +48,7 @@ app.post('/download', (req, res) => {
   const { url, format, quality, playlistMode } = req.body;
   if (!url) return res.status(400).json({ error: 'Missing url' });
 
-  const jobId   = uuidv4();
+  const jobId = uuidv4();
   const playlist = playlistMode === true || isPlaylistOnly(url);
 
   jobs[jobId] = {
@@ -120,7 +121,7 @@ function runDownload(jobId, url, format, quality, playlist) {
 
   if (format === 'mp3') {
     const bitrate = quality === 'best' || quality === '720' ? '320' :
-                    quality === '480' ? '192' : '128';
+      quality === '480' ? '192' : '128';
     args = [
       '--extract-audio',
       '--audio-format', 'mp3',
@@ -158,7 +159,7 @@ function runDownload(jobId, url, format, quality, playlist) {
       const itemMatch = line.match(/Downloading item (\d+) of (\d+)/);
       if (itemMatch) {
         job.completedItems = parseInt(itemMatch[1]);
-        job.totalItems     = parseInt(itemMatch[2]);
+        job.totalItems = parseInt(itemMatch[2]);
         job.status = 'downloading';
         continue;
       }
@@ -188,8 +189,8 @@ function runDownload(jobId, url, format, quality, playlist) {
       const destMatch = line.match(/(?:Destination|Moving):\s+(.+)/);
       if (destMatch) {
         const fp = destMatch[1].trim();
-        job.filePath    = fp;
-        job.filename    = path.basename(fp);
+        job.filePath = fp;
+        job.filename = path.basename(fp);
         job.currentItem = job.filename;
         if (playlist && !job.files.includes(fp)) job.files.push(fp);
         continue;
@@ -212,7 +213,7 @@ function runDownload(jobId, url, format, quality, playlist) {
         if (outputDir !== namedDir && !fs.existsSync(namedDir)) {
           try {
             fs.renameSync(outputDir, namedDir);
-            outputDir       = namedDir;
+            outputDir = namedDir;
             job.playlistDir = namedDir;
           } catch (e) {
             console.warn('Could not rename playlist dir:', e.message);
@@ -222,8 +223,11 @@ function runDownload(jobId, url, format, quality, playlist) {
     }
   });
 
+  let stderrLog = '';
   proc.stderr.on('data', (data) => {
-    console.error(`[${jobId}] STDERR:`, data.toString());
+    const text = data.toString();
+    stderrLog += text;
+    console.error(`[${jobId}] STDERR:`, text);
   });
 
   proc.on('close', (code) => {
@@ -240,21 +244,21 @@ function runDownload(jobId, url, format, quality, playlist) {
           job.filename = files[0].f;
         }
       }
-      job.status  = 'done';
+      job.status = 'done';
       job.percent = 100;
       job.message = playlist
         ? `Downloaded ${job.files.length || job.completedItems} tracks`
         : `Saved: ${job.filename}`;
       console.log(`[${jobId}] ✓ Done`);
     } else {
-      job.status  = 'error';
-      job.message = `yt-dlp exited with code ${code}`;
+      job.status = 'error';
+      job.message = `yt-dlp error: ${stderrLog.slice(-300) || 'exited with code ' + code}`;
       console.error(`[${jobId}] Failed with code ${code}`);
     }
   });
 
   proc.on('error', (err) => {
-    job.status  = 'error';
+    job.status = 'error';
     job.message = err.code === 'ENOENT'
       ? 'yt-dlp not found. Install it: https://github.com/yt-dlp/yt-dlp#installation'
       : err.message;
@@ -268,7 +272,7 @@ app.listen(PORT, '127.0.0.1', () => {
 ╔══════════════════════════════════════╗
 ║        YT Grab Companion App         ║
 ╠══════════════════════════════════════╣
-║  Running on: http://localhost:${PORT}    ║
+║  Running on: http://localhost:${PORT}║
 ║  Output dir: ~/Desktop/YTGrab        ║
 ╚══════════════════════════════════════╝
   `);
