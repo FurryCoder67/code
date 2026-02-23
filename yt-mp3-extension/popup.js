@@ -3,36 +3,25 @@
 
 const NATIVE_HOST = 'com.ytgrab.helper';
 // Fallback: local HTTP bridge on port 9876 (see companion app)
-const LOCAL_BRIDGE = 'http://localhost:443';
+const LOCAL_BRIDGE = 'http://localhost:9876';
 
 let currentFormat = 'mp3';
 let currentQuality = 'best';
 let currentVideoId = null;
 let currentVideoInfo = null;
-let playlistMode = false;
 
 // ─── UI refs ─────────────────────────────────────────────────────────────────
-const videoCard       = document.getElementById('videoCard');
-const notYt           = document.getElementById('notYt');
-const videoTitle      = document.getElementById('videoTitle');
-const videoMeta       = document.getElementById('videoMeta');
-const videoThumb      = document.getElementById('videoThumb');
-const dlBtn           = document.getElementById('dlBtn');
-const dlBtnText       = document.getElementById('dlBtnText');
-const progressSec     = document.getElementById('progressSection');
-const progressFill    = document.getElementById('progressFill');
-const progressLbl     = document.getElementById('progressLabel');
-const statusMsg       = document.getElementById('statusMsg');
-const qualityRow      = document.getElementById('qualityRow');
-const playlistToggle  = document.getElementById('playlistToggle');
-const playlistNote    = document.getElementById('playlistNote');
-
-// ─── Playlist toggle ──────────────────────────────────────────────────────────
-playlistToggle.addEventListener('change', () => {
-  playlistMode = playlistToggle.checked;
-  playlistNote.classList.toggle('visible', playlistMode);
-  dlBtnText.textContent = playlistMode ? 'GRAB PLAYLIST' : 'GRAB IT';
-});
+const videoCard    = document.getElementById('videoCard');
+const notYt        = document.getElementById('notYt');
+const videoTitle   = document.getElementById('videoTitle');
+const videoMeta    = document.getElementById('videoMeta');
+const videoThumb   = document.getElementById('videoThumb');
+const dlBtn        = document.getElementById('dlBtn');
+const progressSec  = document.getElementById('progressSection');
+const progressFill = document.getElementById('progressFill');
+const progressLbl  = document.getElementById('progressLabel');
+const statusMsg    = document.getElementById('statusMsg');
+const qualityRow   = document.getElementById('qualityRow');
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
@@ -44,19 +33,9 @@ async function init() {
     if (!url.hostname.includes('youtube.com')) return showNotYt();
 
     const videoId = url.searchParams.get('v');
-    const listId  = url.searchParams.get('list');
+    if (!videoId) return showNotYt('Navigate to a specific YouTube video.');
 
-    if (!videoId && !listId) return showNotYt('Navigate to a specific YouTube video or playlist.');
-
-    // Auto-enable playlist mode if URL is a pure playlist page
-    if (listId && !videoId) {
-      playlistToggle.checked = true;
-      playlistMode = true;
-      playlistNote.classList.add('visible');
-      dlBtnText.textContent = 'GRAB PLAYLIST';
-    }
-
-    currentVideoId = videoId || listId;
+    currentVideoId = videoId;
     await loadVideoInfo(tab.id, videoId);
   } catch (e) {
     showNotYt();
@@ -188,7 +167,6 @@ async function downloadViaBridge(videoUrl) {
     url: videoUrl,
     format: currentFormat,
     quality: currentQuality,
-    playlistMode,
     title: currentVideoInfo?.title || currentVideoId
   };
 
@@ -230,11 +208,7 @@ async function pollProgress(jobId) {
 
     if (data.status === 'downloading') {
       const pct = data.percent || 0;
-      if (data.playlist && data.totalItems > 0) {
-        setProgress(pct, 'normal', `Track ${data.completedItems} of ${data.totalItems} — ${pct.toFixed(1)}%`);
-      } else {
-        setProgress(pct, 'normal', `Downloading... ${pct.toFixed(1)}%`);
-      }
+      setProgress(pct, 'normal', `Downloading... ${pct.toFixed(1)}%`);
     } else if (data.status === 'converting') {
       setProgress(data.percent || 90, 'normal', 'Converting...');
     } else if (data.status === 'done') {
@@ -243,7 +217,7 @@ async function pollProgress(jobId) {
       // Trigger download of the finished file
       await triggerFileDownload(jobId, data.filename);
 
-      showStatus('success', `✓ ${data.message || 'Downloaded: ' + data.filename}`);
+      showStatus('success', `✓ Downloaded: ${data.filename}`);
       showProgress(false);
       dlBtn.disabled = false;
       return;
