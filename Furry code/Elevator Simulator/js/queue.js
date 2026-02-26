@@ -35,7 +35,7 @@ export class FloorQueue extends Queue {
 export class ElevatorQueue extends Queue {
     constructor(people = []) {
         super();
-        this.arr = people;
+        this.arr = [...people];
     }
     dequeueAtFloor(floor) {
         if (this.isEmpty()) return null;

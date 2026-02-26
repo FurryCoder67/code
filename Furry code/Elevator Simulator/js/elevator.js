@@ -134,29 +134,38 @@ export class Elevator {
         }
     }
 
-    getNextDestinationFloor() {
-        // If elevator has passengers
+    getNextDestinationFloor(blockedFloors = new Set()) {
         if (!this.queue.isEmpty()) {
             return this.queue.peek().destinationFloor;
         }
 
-        // Otherwise check floors
+        let nearestFloor = null;
+        let nearestDistance = Infinity;
+
         for (let i = 0; i < this.floors.length; i++) {
             const floor = this.floors[i];
+            if (floor.queue.isEmpty()) {
+                continue;
+            }
+            if (blockedFloors.has(floor.floorNumber)) {
+                continue;
+            }
 
-            if (floor.upButtonPressed || floor.downButtonPressed) {
-                return floor.floorNumber;
+            const distance = Math.abs(floor.floorNumber - this.currentFloor);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestFloor = floor.floorNumber;
             }
         }
 
-        return null;
+        return nearestFloor;
     }
 
-    moveAndLoad() {
+    moveAndLoad(blockedFloors = new Set()) {
         if (!this.move()) {
             this.unloadPeople();
             this.loadPeople();
-            this.destinationFloor = this.getNextDestinationFloor();
+            this.destinationFloor = this.getNextDestinationFloor(blockedFloors);
         }
     }
 }
@@ -177,8 +186,20 @@ export class Building {
     }
 
     moveElevatorsAndLoad() {
+        const claimedFloors = new Set();
+
         for (let i = 0; i < this.elevators.length; i++) {
-            this.elevators[i].moveAndLoad();
+            const elevator = this.elevators[i];
+            if (elevator.destinationFloor !== null) {
+                claimedFloors.add(elevator.destinationFloor);
+            }
+        }
+
+        for (let i = 0; i < this.elevators.length; i++) {
+            this.elevators[i].moveAndLoad(claimedFloors);
+            if (this.elevators[i].destinationFloor !== null) {
+                claimedFloors.add(this.elevators[i].destinationFloor);
+            }
         }
     }
 
