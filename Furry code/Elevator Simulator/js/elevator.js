@@ -249,7 +249,6 @@ export class Simulation {
             this.building.floors[i].pressButtons();
         }
         this.building.moveElevatorsAndLoad();
-        console.clear();
         console.log("Timer:", this.timer);
         for (let i = 0; i < this.building.elevators.length; i++) {
             const currentElevator = this.building.elevators[i];
