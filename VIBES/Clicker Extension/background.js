@@ -16,7 +16,7 @@ const shopItems = [
     { name: "Divine Cappuccino Assassino", cost: 999999999, cps: 999999999, img: "/pics/300px-Fire_katanas.webp" }
 ];
 
-// Load game from storage
+// Load game from storage 
 chrome.storage.local.get(['clicks', 'cps', 'shopItems'], (data) => {
     if (data.clicks !== undefined) clicks = data.clicks;
     if (data.cps !== undefined) cps = data.cps;
